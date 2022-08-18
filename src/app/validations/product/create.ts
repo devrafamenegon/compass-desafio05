@@ -20,9 +20,7 @@ export default async (req: Request, res: Response, next: NextFunction): Promise<
   } catch (error) {
     return res.status(400).json({
       message: 'Bad Request Error',
-      details: [
-        { message: error }
-      ]
+      details: error.details
     })
   }
 }
