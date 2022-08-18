@@ -5,8 +5,13 @@ import Joi from 'joi'
 export default async (req: Request, res: Response, next: NextFunction) => {
   try {
     const schema = Joi.object({
-      name: Joi.string().required(),
-      age: Joi.number()
+      title: Joi.string().required(),
+      description: Joi.string().required(),
+      department: Joi.string().required(),
+      brand: Joi.string().required(),
+      price: Joi.number().required(),
+      qtd_stock: Joi.number().required(),
+      bar_codes: Joi.string().required()
     })
 
     const { error } = await schema.validate(req.body, { abortEarly: true })
