@@ -1,9 +1,8 @@
-import { IProductResponse, IProduct } from '../interfaces/IProduct'
+import { IProductResponse, IProductCreate } from '../interfaces/IProduct'
 import ProductRepository from '../repository/ProductRepository'
 
 class ProductService {
-  async create (payload: IProduct): Promise<IProductResponse> {
-    payload.stock_control_enabled = true
+  async create (payload: IProductCreate): Promise<IProductResponse> {
     const result = await ProductRepository.create(payload)
     return result
   }

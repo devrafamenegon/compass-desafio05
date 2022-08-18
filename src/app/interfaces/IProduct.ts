@@ -1,6 +1,7 @@
 import { Types } from 'mongoose'
 
 export interface IProduct {
+  _id?: Types.ObjectId
   title: string
   description: string
   department: string
@@ -24,4 +25,15 @@ export interface IProductResponse {
   created_at?: Date
   updated_at?: Date
   __v?: number
+}
+
+export interface IProductCreate {
+  title: string
+  description: string
+  department: string
+  brand: string
+  price: number
+  qtd_stock: number
+  stock_control_enabled?: boolean
+  bar_codes: string
 }
