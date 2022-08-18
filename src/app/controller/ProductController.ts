@@ -11,6 +11,15 @@ class ProductController {
       return res.status(500).json({ error })
     }
   }
+
+  async findAll (req, res): Promise<IProductResponse[]> {
+    try {
+      const result = await ProductService.findAll()
+      return res.status(200).json(result)
+    } catch (error) {
+      return res.status(500).json({ error })
+    }
+  }
 }
 
 export default new ProductController()

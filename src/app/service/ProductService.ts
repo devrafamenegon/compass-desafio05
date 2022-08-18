@@ -6,6 +6,11 @@ class ProductService {
     const result = await ProductRepository.create(payload)
     return result
   }
+
+  async findAll (): Promise<IProductResponse[]> {
+    const result = await ProductRepository.findAll()
+    return result
+  }
 }
 
 export default new ProductService()
