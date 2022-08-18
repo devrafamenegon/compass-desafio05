@@ -1,3 +1,3 @@
-import ProductRouter from './product.router';
+import ProductRouter from './product.router'
 
-export default [ProductRouter];
+export default [ProductRouter]
