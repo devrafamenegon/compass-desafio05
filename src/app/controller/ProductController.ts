@@ -12,9 +12,10 @@ class ProductController {
     }
   }
 
-  async findAll (req, res): Promise<IProductResponse[]> {
+  async findAll (req, res): Promise<Response> {
     try {
-      const result = await ProductService.findAll()
+      const { page, ...body } = req.query
+      const result = await ProductService.findAll(body, page)
       return res.status(200).json(result)
     } catch (error) {
       return res.status(500).json({ error })

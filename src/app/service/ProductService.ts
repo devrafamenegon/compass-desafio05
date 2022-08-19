@@ -1,4 +1,5 @@
-import { IProductResponse, IProductCreate } from '../interfaces/IProduct'
+import { PaginateResult } from 'mongoose'
+import { IProductResponse, IProductCreate, IProductQuery } from '../interfaces/IProduct'
 import ProductRepository from '../repository/ProductRepository'
 
 class ProductService {
@@ -7,8 +8,15 @@ class ProductService {
     return result
   }
 
-  async findAll (): Promise<IProductResponse[]> {
-    const result = await ProductRepository.findAll()
+  async findAll (query: IProductQuery, page: number): Promise<PaginateResult<IProductResponse>> {
+    const queryBuilded: {[key: string]: object | boolean} = {}
+    Object.keys(query).forEach(key => {
+      queryBuilded[key] = { $regex: query[key] }
+    })
+
+    queryBuilded.stock_control_enabled = true
+
+    const result = await ProductRepository.findAll(queryBuilded, page ?? 1)
     return result
   }
 }
