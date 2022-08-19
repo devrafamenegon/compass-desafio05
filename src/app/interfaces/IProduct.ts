@@ -37,3 +37,8 @@ export interface IProductCreate {
   stock_control_enabled?: boolean
   bar_codes: string
 }
+
+export interface IProductQuery {
+  department?: string
+  brand?: string
+}

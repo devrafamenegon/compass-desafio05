@@ -1,4 +1,5 @@
-import mongoose, { Schema } from 'mongoose'
+import mongoose, { PaginateModel, Schema } from 'mongoose'
+import paginate from 'mongoose-paginate-v2'
 import { IProduct } from '../interfaces/IProduct'
 import { randomUUID } from 'crypto'
 
@@ -17,6 +18,8 @@ const schema = new Schema<IProduct>({
   timestamps: true
 })
 
-const Product = mongoose.model<IProduct>('Product', schema)
+schema.plugin(paginate)
+
+const Product = mongoose.model<IProduct, PaginateModel<IProduct>>('Product', schema)
 
 export default Product
