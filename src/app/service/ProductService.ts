@@ -38,6 +38,11 @@ class ProductService {
     const result = await ProductRepository.update(id, payload)
     return result
   }
+
+  async delete (id: string): Promise<IProductResponse> {
+    const result = await ProductRepository.delete(id)
+    return result
+  }
 }
 
 export default new ProductService()

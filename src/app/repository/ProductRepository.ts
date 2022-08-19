@@ -29,6 +29,14 @@ class ProductRepository {
     }
     return result
   }
+
+  async delete (id: string): Promise<IProductResponse> {
+    const result = await ProductSchema.findByIdAndDelete(id)
+    if (result === null) {
+      throw new Error('Product not found')
+    }
+    return result
+  }
 }
 
 export default new ProductRepository()
