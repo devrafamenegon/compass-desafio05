@@ -10,7 +10,8 @@ class ProductRepository {
 
   async findAll (query: IProductQuery, page: number): Promise<PaginateResult<IProductResponse>> {
     const limitDefault: number = Number(process.env.DEFAULT_LIMIT_PER_PAGE ?? 50)
-    return await ProductSchema.paginate(query, { page, limit: limitDefault, customLabels })
+    const result = await ProductSchema.paginate(query, { page, limit: limitDefault, customLabels })
+    return result
   }
 
   async findOne (id: string): Promise<IProductResponse> {
