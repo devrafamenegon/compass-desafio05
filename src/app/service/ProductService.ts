@@ -19,6 +19,11 @@ class ProductService {
     const result = await ProductRepository.findAll(queryBuilded, page ?? 1)
     return result
   }
+
+  async findOne (id: string): Promise<IProductResponse> {
+    const result = await ProductRepository.findOne(id)
+    return result
+  }
 }
 
 export default new ProductService()

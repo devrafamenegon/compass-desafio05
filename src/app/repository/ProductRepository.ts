@@ -12,6 +12,14 @@ class ProductRepository {
     const limitDefault: number = Number(process.env.DEFAULT_LIMIT_PER_PAGE ?? 50)
     return await ProductSchema.paginate(query, { page, limit: limitDefault, customLabels })
   }
+
+  async findOne (id: string): Promise<IProductResponse> {
+    const result = await ProductSchema.findById(id)
+    if (result === null) {
+      throw new Error('Product not found')
+    }
+    return result
+  }
 }
 
 export default new ProductRepository()
