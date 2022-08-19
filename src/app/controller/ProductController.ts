@@ -42,6 +42,16 @@ class ProductController {
       return res.status(500).json({ error })
     }
   }
+
+  async delete (req, res): Promise<Response> {
+    try {
+      const { id } = req.params
+      const result = await ProductService.delete(id)
+      return res.status(204).json(result)
+    } catch (error) {
+      return res.status(500).json({ error })
+    }
+  }
 }
 
 export default new ProductController()
