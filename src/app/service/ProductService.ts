@@ -24,6 +24,20 @@ class ProductService {
     const result = await ProductRepository.findOne(id)
     return result
   }
+
+  async update (id: string, payload: IProductCreate): Promise<IProductResponse> {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { qtd_stock } = payload
+
+    if (qtd_stock === 0) {
+      payload.stock_control_enabled = false
+    } else {
+      payload.stock_control_enabled = true
+    }
+
+    const result = await ProductRepository.update(id, payload)
+    return result
+  }
 }
 
 export default new ProductService()
