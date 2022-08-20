@@ -1,6 +1,7 @@
 import { PaginateResult } from 'mongoose'
 import { IProductResponse, IProductCreate, IProductQuery } from '../interfaces/IProduct'
 import ProductRepository from '../repository/ProductRepository'
+import NotFoundError from '../errors/NotFoundError'
 
 class ProductService {
   async create (payload: IProductCreate): Promise<IProductResponse> {
@@ -16,7 +17,10 @@ class ProductService {
 
     queryBuilded.stock_control_enabled = true
 
-    const result = await ProductRepository.findAll(queryBuilded, page ?? 1)
+    const result: PaginateResult<IProductResponse> = await ProductRepository.findAll(queryBuilded, page ?? 1)
+
+    if (result.totalCount === 0) throw new NotFoundError('Product not Found')
+
     return result
   }
 
