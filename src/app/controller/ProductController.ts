@@ -32,6 +32,16 @@ class ProductController {
     }
   }
 
+  async findLowStock (req, res): Promise<Response> {
+    try {
+      const { page } = req.query
+      const result = await ProductService.findLowStock(page)
+      return res.status(200).json(result)
+    } catch (error) {
+      return res.status(500).json({ error })
+    }
+  }
+
   async update (req, res): Promise<Response> {
     try {
       const { id } = req.params
