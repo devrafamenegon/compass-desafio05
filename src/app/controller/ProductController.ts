@@ -32,6 +32,10 @@ class ProductController {
     }
   }
 
+  findLowStock (req, res): Response {
+    return res.status(200).json({ message: 'Not implemented' })
+  }
+
   async update (req, res): Promise<Response> {
     try {
       const { id } = req.params
