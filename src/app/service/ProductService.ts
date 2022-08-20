@@ -2,10 +2,14 @@ import { PaginateResult } from 'mongoose'
 import { IProductResponse, IProductCreate, IProductQuery } from '../interfaces/IProduct'
 import ProductRepository from '../repository/ProductRepository'
 import NotFoundError from '../errors/NotFoundError'
+import BadRequestError from 'app/errors/BadRequestError'
 
 class ProductService {
   async create (payload: IProductCreate): Promise<IProductResponse> {
     const result = await ProductRepository.create(payload)
+
+    if (result === null) throw new BadRequestError('Client not created')
+
     return result
   }
 
@@ -35,14 +39,7 @@ class ProductService {
   }
 
   async update (id: string, payload: IProductCreate): Promise<IProductResponse> {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { qtd_stock } = payload
-
-    if (qtd_stock === 0) {
-      payload.stock_control_enabled = false
-    } else {
-      payload.stock_control_enabled = true
-    }
+    payload.qtd_stock === 0 ? payload.stock_control_enabled = false : payload.stock_control_enabled = true
 
     const result = await ProductRepository.update(id, payload)
     return result
