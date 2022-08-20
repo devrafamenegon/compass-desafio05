@@ -2,7 +2,7 @@ import { PaginateResult } from 'mongoose'
 import { IProductResponse, IProductCreate, IProductQuery } from '../interfaces/IProduct'
 import ProductRepository from '../repository/ProductRepository'
 import NotFoundError from '../errors/NotFoundError'
-import BadRequestError from 'app/errors/BadRequestError'
+import BadRequestError from '../errors/BadRequestError'
 
 class ProductService {
   async create (payload: IProductCreate): Promise<IProductResponse> {
