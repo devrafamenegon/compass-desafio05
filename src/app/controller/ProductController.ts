@@ -24,7 +24,12 @@ class ProductController {
       const result = await ProductService.findAll(body, page)
       return res.status(200).json(result)
     } catch (error) {
-      return res.status(500).json({ error })
+      return res.status(error.statusCode ?? 500).json({
+        message: error.name,
+        details: [
+          { message: error.message }
+        ]
+      })
     }
   }
 
@@ -34,7 +39,12 @@ class ProductController {
       const result = await ProductService.findOne(id)
       return res.status(200).json(result)
     } catch (error) {
-      return res.status(500).json({ error })
+      return res.status(error.statusCode ?? 500).json({
+        message: error.name,
+        details: [
+          { message: error.message }
+        ]
+      })
     }
   }
 
@@ -44,7 +54,12 @@ class ProductController {
       const result = await ProductService.findLowStock(page)
       return res.status(200).json(result)
     } catch (error) {
-      return res.status(500).json({ error })
+      return res.status(error.statusCode ?? 500).json({
+        message: error.name,
+        details: [
+          { message: error.message }
+        ]
+      })
     }
   }
 
@@ -55,7 +70,12 @@ class ProductController {
       const result = await ProductService.update(id, payload)
       return res.status(200).json(result)
     } catch (error) {
-      return res.status(500).json({ error })
+      return res.status(error.statusCode ?? 500).json({
+        message: error.name,
+        details: [
+          { message: error.message }
+        ]
+      })
     }
   }
 
@@ -65,7 +85,12 @@ class ProductController {
       const result = await ProductService.delete(id)
       return res.status(204).json(result)
     } catch (error) {
-      return res.status(500).json({ error })
+      return res.status(error.statusCode ?? 500).json({
+        message: error.name,
+        details: [
+          { message: error.message }
+        ]
+      })
     }
   }
 }
