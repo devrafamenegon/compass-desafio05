@@ -1,14 +1,20 @@
-import type { IProductCreate, IProductResponse } from 'app/interfaces/IProduct'
+import type { IProductCreate } from 'app/interfaces/IProduct'
+import { Request, Response } from 'express'
 import ProductService from '../service/ProductService'
 
 class ProductController {
-  async create (req, res): Promise<IProductResponse> {
+  async create (req: Request, res: Response): Promise<Response> {
     try {
       const payload: IProductCreate = req.body
       const result = await ProductService.create(payload)
       return res.status(201).json(result)
     } catch (error) {
-      return res.status(500).json({ error })
+      return res.status(error.statusCode ?? 500).json({
+        message: error.name,
+        details: [
+          { message: error.message }
+        ]
+      })
     }
   }
 
