@@ -25,6 +25,11 @@ class ProductService {
     return result
   }
 
+  async findLowStock (page: number): Promise<PaginateResult<IProductResponse>> {
+    const result = await ProductRepository.findLowStock(page ?? 1)
+    return result
+  }
+
   async update (id: string, payload: IProductCreate): Promise<IProductResponse> {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { qtd_stock } = payload
