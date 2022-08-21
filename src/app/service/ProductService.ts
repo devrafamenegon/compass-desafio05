@@ -48,9 +48,14 @@ class ProductService {
   }
 
   async update (id: string, payload: IProductCreate): Promise<IProductResponse> {
+    if (!isValidUuid(id)) throw new BadRequestError('Product id is not valid')
+
     payload.qtd_stock === 0 ? payload.stock_control_enabled = false : payload.stock_control_enabled = true
 
     const result = await ProductRepository.update(id, payload)
+
+    if (result === null) throw new NotFoundError('Product not found')
+
     return result
   }
 
