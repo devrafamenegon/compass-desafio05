@@ -9,7 +9,7 @@ class ProductService {
   async create (payload: IProductCreate): Promise<IProductResponse> {
     const result = await ProductRepository.create(payload)
 
-    if (result === null) throw new BadRequestError('Client not created')
+    if (result === null) throw new BadRequestError('Product not created')
 
     return result
   }
@@ -24,7 +24,7 @@ class ProductService {
 
     const result: PaginateResult<IProductResponse> = await ProductRepository.findAll(queryBuilded, page ?? 1)
 
-    if (result.totalCount === 0) throw new NotFoundError('Product not Found')
+    if (result.totalCount === 0) throw new NotFoundError('Product not found')
 
     return result
   }
@@ -40,7 +40,10 @@ class ProductService {
   }
 
   async findLowStock (page: number): Promise<PaginateResult<IProductResponse>> {
-    const result = await ProductRepository.findLowStock(page ?? 1)
+    const result: PaginateResult<IProductResponse> = await ProductRepository.findLowStock(page ?? 1)
+
+    if (result.totalCount === 0) throw new NotFoundError('Product not found')
+
     return result
   }
 
