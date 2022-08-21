@@ -25,11 +25,8 @@ class ProductRepository {
     return result
   }
 
-  async update (id: string, payload: IProductCreate): Promise<IProductResponse> {
+  async update (id: string, payload: IProductCreate): Promise<IProductResponse | null> {
     const result = await ProductSchema.findByIdAndUpdate(id, payload, { new: true })
-    if (result === null) {
-      throw new Error('Product not found')
-    }
     return result
   }
 
