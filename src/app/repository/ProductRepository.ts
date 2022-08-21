@@ -14,11 +14,8 @@ class ProductRepository {
     return result
   }
 
-  async findOne (id: string): Promise<IProductResponse> {
+  async findOne (id: string): Promise<IProductResponse | null> {
     const result = await ProductSchema.findById(id)
-    if (result === null) {
-      throw new Error('Product not found')
-    }
     return result
   }
 
