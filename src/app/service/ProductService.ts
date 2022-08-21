@@ -3,6 +3,7 @@ import { IProductResponse, IProductCreate, IProductQuery } from '../interfaces/I
 import ProductRepository from '../repository/ProductRepository'
 import NotFoundError from '../errors/NotFoundError'
 import BadRequestError from '../errors/BadRequestError'
+import isValidUuid from '../utils/isValidUuid'
 
 class ProductService {
   async create (payload: IProductCreate): Promise<IProductResponse> {
@@ -29,7 +30,12 @@ class ProductService {
   }
 
   async findOne (id: string): Promise<IProductResponse> {
+    if (!isValidUuid(id)) throw new BadRequestError('Product id is not valid')
+
     const result = await ProductRepository.findOne(id)
+
+    if (result === null) throw new NotFoundError('Product not found')
+
     return result
   }
 
