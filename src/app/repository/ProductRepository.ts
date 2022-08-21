@@ -21,7 +21,19 @@ class ProductRepository {
 
   async findLowStock (page: number): Promise<PaginateResult<IProductResponse>> {
     const limitDefault: number = Number(process.env.DEFAULT_LIMIT_PER_PAGE ?? 50)
-    const result = await ProductSchema.paginate({ stock_control_enabled: true, qtd_stock: { $lt: 100 } }, { page, limit: limitDefault, customLabels })
+    const result = await ProductSchema.paginate(
+      {
+        stock_control_enabled: true,
+        qtd_stock: { $lt: 100 }
+      },
+      {
+        page,
+        limit: limitDefault,
+        sort: { qtd_stock: 1 },
+        customLabels
+      }
+    )
+
     return result
   }
 
