@@ -1,10 +1,14 @@
 import { PaginateResult } from 'mongoose'
 import { IProductResponse, IProductCreate, IProductQuery } from '../interfaces/IProduct'
 import ProductRepository from '../repository/ProductRepository'
+import NotFoundError from '../errors/NotFoundError'
+import BadRequestError from '../errors/BadRequestError'
+import isValidUuid from '../utils/isValidUuid'
 
 class ProductService {
   async create (payload: IProductCreate): Promise<IProductResponse> {
     const result = await ProductRepository.create(payload)
+    if (result === null) throw new BadRequestError('Product not created')
     return result
   }
 
@@ -16,37 +20,66 @@ class ProductService {
 
     queryBuilded.stock_control_enabled = true
 
-    const result = await ProductRepository.findAll(queryBuilded, page ?? 1)
+    const result: PaginateResult<IProductResponse> = await ProductRepository.findAll(queryBuilded, page ?? 1)
+    if (result.totalCount === 0) throw new NotFoundError('Product not found')
     return result
   }
 
   async findOne (id: string): Promise<IProductResponse> {
+    if (!isValidUuid(id)) throw new BadRequestError('Product id is not valid')
+
     const result = await ProductRepository.findOne(id)
+    if (result === null) throw new NotFoundError('Product not found')
     return result
   }
 
   async findLowStock (page: number): Promise<PaginateResult<IProductResponse>> {
-    const result = await ProductRepository.findLowStock(page ?? 1)
+    const result: PaginateResult<IProductResponse> = await ProductRepository.findLowStock(page ?? 1)
+
+    if (result.totalCount === 0) throw new NotFoundError('Product not found')
     return result
   }
 
   async update (id: string, payload: IProductCreate): Promise<IProductResponse> {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { qtd_stock } = payload
+    if (!isValidUuid(id)) throw new BadRequestError('Product id is not valid')
 
-    if (qtd_stock === 0) {
-      payload.stock_control_enabled = false
-    } else {
-      payload.stock_control_enabled = true
-    }
+    payload.qtd_stock === 0 ? payload.stock_control_enabled = false : payload.stock_control_enabled = true
 
     const result = await ProductRepository.update(id, payload)
+    if (result === null) throw new NotFoundError('Product not found')
     return result
   }
 
   async delete (id: string): Promise<IProductResponse> {
+    if (!isValidUuid(id)) throw new BadRequestError('Product id is not valid')
+
     const result = await ProductRepository.delete(id)
+    if (result === null) throw new NotFoundError('Product not found')
     return result
+  }
+
+  async createWithCsv (file): Promise<IProductResponse> {
+    const csvFile = file.buffer.toString('utf-8').split('\n')
+    csvFile.shift()
+
+    csvFile.map((line) => {
+      const lineArray = line.split(',')
+      console.log(lineArray)
+      const payload: IProductCreate = {
+        title: lineArray[0],
+        description: lineArray[1],
+        department: lineArray[2],
+        brand: lineArray[3],
+        price: lineArray[4],
+        qtd_stock: lineArray[5],
+        bar_codes: lineArray[6]
+      }
+
+      return payload
+      // return this.create(payload)
+    })
+
+    return csvFile
   }
 }
 
