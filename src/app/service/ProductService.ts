@@ -57,6 +57,30 @@ class ProductService {
     if (result === null) throw new NotFoundError('Product not found')
     return result
   }
+
+  async createWithCsv (file): Promise<IProductResponse> {
+    const csvFile = file.buffer.toString('utf-8').split('\n')
+    csvFile.shift()
+
+    csvFile.map((line) => {
+      const lineArray = line.split(',')
+      console.log(lineArray)
+      const payload: IProductCreate = {
+        title: lineArray[0],
+        description: lineArray[1],
+        department: lineArray[2],
+        brand: lineArray[3],
+        price: lineArray[4],
+        qtd_stock: lineArray[5],
+        bar_codes: lineArray[6]
+      }
+
+      return payload
+      // return this.create(payload)
+    })
+
+    return csvFile
+  }
 }
 
 export default new ProductService()
