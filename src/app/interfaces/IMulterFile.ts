@@ -1,4 +1,4 @@
-export interface multerFile {
+export interface IMulterFile {
   buffer: Buffer
   encoding: string
   fieldname: string
