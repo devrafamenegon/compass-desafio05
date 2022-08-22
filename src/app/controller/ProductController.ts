@@ -1,3 +1,4 @@
+import { IMulterFile } from '../interfaces/IMulterFile'
 import type { IProductCreate } from 'app/interfaces/IProduct'
 import { Request, Response } from 'express'
 import ProductService from '../service/ProductService'
@@ -96,7 +97,7 @@ class ProductController {
 
   async createWithCsv (req, res): Promise<Response> {
     try {
-      const { file } = req
+      const file: IMulterFile = req.file
       const result = await ProductService.createWithCsv(file)
       return res.status(200).json(result)
     } catch (error) {
