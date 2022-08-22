@@ -93,6 +93,21 @@ class ProductController {
       })
     }
   }
+
+  async createWithCsv (req, res): Promise<Response> {
+    try {
+      const { file } = req
+      const result = await ProductService.createWithCsv(file)
+      return res.status(200).json(result)
+    } catch (error) {
+      return res.status(error.statusCode ?? 500).json({
+        message: error.name,
+        details: [
+          { message: error.message }
+        ]
+      })
+    }
+  }
 }
 
 export default new ProductController()
