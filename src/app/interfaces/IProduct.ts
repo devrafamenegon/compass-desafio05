@@ -42,3 +42,15 @@ export interface IProductQuery {
   department?: string
   brand?: string
 }
+
+export interface IErrorsDetails {
+  title: string
+  bar_codes: string
+  error: any
+}
+
+export interface IProductCreateWithCsvResponse {
+  success: number
+  errors: number
+  errors_details: IErrorsDetails[]
+}
