@@ -1,9 +1,11 @@
 import { PaginateResult } from 'mongoose'
-import { IProductResponse, IProductCreate, IProductQuery } from '../interfaces/IProduct'
+import { IProductResponse, IProductCreate, IProductQuery, IProductCreateWithCsvResponse } from '../interfaces/IProduct'
 import ProductRepository from '../repository/ProductRepository'
 import NotFoundError from '../errors/NotFoundError'
 import BadRequestError from '../errors/BadRequestError'
 import isValidUuid from '../utils/isValidUuid'
+import { IMulterFile } from 'app/interfaces/IMulterFile'
+import createWithCsv from '../validations/product/createWithCsv'
 
 class ProductService {
   async create (payload: IProductCreate): Promise<IProductResponse> {
@@ -58,28 +60,56 @@ class ProductService {
     return result
   }
 
-  async createWithCsv (file): Promise<IProductResponse> {
-    const csvFile = file.buffer.toString('utf-8').split('\n')
+  async createWithCsv (file: IMulterFile): Promise<any> {
+    if (file.mimetype !== 'text/csv') throw new BadRequestError('File is not a csv')
+    if (file.size > 1000000) throw new BadRequestError('File is too big')
+
+    const csvFile = file.buffer.toString('utf-8').trim().split('\n')
     csvFile.shift()
 
-    csvFile.map((line) => {
+    const customResult: IProductCreateWithCsvResponse = {
+      success: 0,
+      errors: 0,
+      errors_details: []
+    }
+
+    const regexCommaToDot = /("[^",]+),([^"]+")/g
+
+    const csvFileFormated = csvFile.map((line) => {
+      const formatedLine = line.replace(/\r/g, '').replace(regexCommaToDot, function (match) {
+        return match.replace(',', '.').replace(/"/g, '')
+      })
+      return formatedLine
+    })
+
+    for (const line of csvFileFormated) {
       const lineArray = line.split(',')
-      console.log(lineArray)
+
       const payload: IProductCreate = {
         title: lineArray[0],
         description: lineArray[1],
         department: lineArray[2],
         brand: lineArray[3],
-        price: lineArray[4],
-        qtd_stock: lineArray[5],
+        price: parseFloat(lineArray[4]),
+        qtd_stock: parseInt(lineArray[5]),
         bar_codes: lineArray[6]
       }
 
-      return payload
-      // return this.create(payload)
-    })
+      const payloadValidate = await createWithCsv(payload)
 
-    return csvFile
+      if (payloadValidate !== null) {
+        customResult.errors += 1
+        customResult.errors_details.push({
+          title: payload.title,
+          bar_codes: payload.bar_codes,
+          error: payloadValidate
+        })
+      } else {
+        customResult.success += 1
+        await this.create(payload)
+      }
+    }
+    return customResult
   }
 }
 
