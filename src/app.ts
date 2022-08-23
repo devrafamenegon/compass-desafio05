@@ -32,7 +32,7 @@ class App {
   }
 
   private routes (): void {
-    this.server.use(...routes)
+    this.server.use('/api/v1', ...routes)
   }
 }
 

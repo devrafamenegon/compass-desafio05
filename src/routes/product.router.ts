@@ -7,13 +7,13 @@ import multer from 'multer'
 
 const router = Router()
 
-router.post('/api/v1/product', createValidation, ProductController.create)
-router.post('/api/v1/product/csv', multer().single('file', 'csv'), ProductController.createWithCsv)
-router.get('/api/v1/product', validateQuery, ProductController.findAll)
-router.get('/api/v1/product/low_stock', ProductController.findLowStock)
-router.get('/api/v1/product/:id', ProductController.findOne)
-router.put('/api/v1/product/:id', updateValidation, ProductController.update)
-router.patch('/api/v1/product/:id', updateValidation, ProductController.update)
-router.delete('/api/v1/product/:id', ProductController.delete)
+router.post('/product', createValidation, ProductController.create)
+router.post('/product/csv', multer().single('file', 'csv'), ProductController.createWithCsv)
+router.get('/product', validateQuery, ProductController.findAll)
+router.get('/product/low_stock', ProductController.findLowStock)
+router.get('/product/:id', ProductController.findOne)
+router.put('/product/:id', updateValidation, ProductController.update)
+router.patch('/product/:id', updateValidation, ProductController.update)
+router.delete('/product/:id', ProductController.delete)
 
 export default router
