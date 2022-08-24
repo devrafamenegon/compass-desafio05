@@ -65,6 +65,11 @@ describe('Product', () => {
         __v: expect.any(Number)
       }))
     })
+
+    it('should not create a product without sending a product payload', async () => {
+      const response = await appTest.post('/api/v1/product').send()
+      expect(response.statusCode).toBe(400)
+    })
   })
 
   describe('get product routes', () => {
