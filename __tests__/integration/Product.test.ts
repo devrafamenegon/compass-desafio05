@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import supertest from 'supertest'
 import { IProductCreate } from '../../src/app/interfaces/IProduct'
 import server from '../../src/server'
@@ -22,6 +23,12 @@ const productReturn = {
 let productId
 
 describe('Product', () => {
+  afterAll(async () => {
+    server.close()
+    await mongoose.disconnect();
+    await mongoose.connection.close();
+  });
+
   describe('create product routes', () => {
     const productPayload: IProductCreate = {
       title: 'Product',
