@@ -4,6 +4,23 @@ import server from '../../src/server'
 
 const appTest = supertest(server)
 
+const productReturn = {
+  _id: expect.any(String),
+  title: expect.any(String),
+  description: expect.any(String), 
+  department: expect.any(String),
+  brand: expect.any(String), 
+  price: expect.any(Number),
+  qtd_stock: expect.any(Number), 
+  stock_control_enabled: expect.any(Boolean),
+  bar_codes: expect.any(String),
+  createdAt: expect.any(String),
+  updatedAt: expect.any(String),
+  __v: expect.any(Number)
+}
+
+let productId
+
 describe('Product', () => {
   describe('create product routes', () => {
     const productPayload: IProductCreate = {
@@ -18,7 +35,8 @@ describe('Product', () => {
 
     it('should create a product', async () => {
       const response = await appTest.post('/api/v1/product').send(productPayload)
-
+      productId = response.body._id
+      
       expect(response.statusCode).toBe(201)
       expect(response.body).toEqual(expect.objectContaining({ 
         _id: expect.any(String),
@@ -34,6 +52,19 @@ describe('Product', () => {
         updatedAt: expect.any(String),
         __v: expect.any(Number)
       }))
+    })
+  })
+
+  describe('get product routes', () => {
+    it('should get all products', async () => {
+      const response = await appTest.get('/api/v1/product').send()
+      expect(response.statusCode).toBe(200)
+    })
+  
+    it('should get one product', async () => {
+      const response = await appTest.get(`/api/v1/product/${productId}`).send()
+      expect(response.statusCode).toBe(200)
+      expect(response.body).toEqual(expect.objectContaining(productReturn))
     })
   })
 })
