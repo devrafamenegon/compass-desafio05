@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import supertest from 'supertest'
 import { IProductCreate } from '../../src/app/interfaces/IProduct'
+import ProductSchema from '../../src/app/schema/ProductSchema'
 import server from '../../src/server'
 
 const appTest = supertest(server)
@@ -23,6 +24,10 @@ const productReturn = {
 let productId: string
 
 describe('Product', () => {
+  beforeAll(async () => {
+    await ProductSchema.deleteMany({})
+  })
+  
   afterAll(async () => {
     server.close()
     await mongoose.disconnect();
