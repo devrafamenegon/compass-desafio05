@@ -20,7 +20,7 @@ const productReturn = {
   __v: expect.any(Number)
 }
 
-let productId
+let productId: string
 
 describe('Product', () => {
   afterAll(async () => {
