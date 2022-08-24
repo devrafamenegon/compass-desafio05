@@ -67,4 +67,34 @@ describe('Product', () => {
       expect(response.body).toEqual(expect.objectContaining(productReturn))
     })
   })
+
+  describe('update product routes', () => {
+    it('should update all properties of one product', async () => {
+      const product: IProductCreate = {
+        title: 'Product 2',
+        description: 'Description 2',
+        department: 'Department 2',
+        brand: 'Brand 2',
+        qtd_stock: 100,
+        price: 10.5,
+        bar_codes: '1234567891012'
+      }
+
+      const response = await appTest.put(`/api/v1/product/${productId}`).send(product)
+      expect(response.statusCode).toBe(200)
+      expect(response.body).toEqual(expect.objectContaining(productReturn))
+    })
+
+    it('should update one or more properties of one product', async () => {
+      const product = {
+        title: 'Product 3',
+        description: 'Description 3',
+        department: 'Department 3',
+      }
+
+      const response = await appTest.patch(`/api/v1/product/${productId}`).send(product)
+      expect(response.statusCode).toBe(200)
+      expect(response.body).toEqual(expect.objectContaining(productReturn))
+    })
+  })
 })
