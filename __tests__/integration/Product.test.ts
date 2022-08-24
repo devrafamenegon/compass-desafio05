@@ -97,4 +97,12 @@ describe('Product', () => {
       expect(response.body).toEqual(expect.objectContaining(productReturn))
     })
   })
+
+  describe('delete product route', () => {
+    it('should delete one product', async () => {
+      const response = await appTest.delete(`/api/v1/product/${productId}`).send()
+      expect(response.statusCode).toBe(204)
+      expect(response.body).toEqual({})
+    })
+  })
 })
