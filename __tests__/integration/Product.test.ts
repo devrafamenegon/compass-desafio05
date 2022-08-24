@@ -45,6 +45,12 @@ describe('Product', () => {
       bar_codes: '1234567891012'
     }
 
+    const incompletProductPayload = {
+      title: 'Product',
+      description: 'Description',
+      bar_codes: '1234567891012'
+    }
+
     it('should create a product', async () => {
       const response = await appTest.post('/api/v1/product').send(productPayload)
       productId = response.body._id
@@ -66,8 +72,13 @@ describe('Product', () => {
       }))
     })
 
-    it('should not create a product without sending a product payload', async () => {
+    it('should not create a product sending an empty product payload', async () => {
       const response = await appTest.post('/api/v1/product').send()
+      expect(response.statusCode).toBe(400)
+    })
+
+    it('should not create a product sending an incomplet product payload', async () => {
+      const response = await appTest.post('/api/v1/product').send(incompletProductPayload)
       expect(response.statusCode).toBe(400)
     })
   })
