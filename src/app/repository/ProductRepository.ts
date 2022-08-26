@@ -19,9 +19,8 @@ class ProductRepository {
     return result
   }
 
-  async findByBarcode (barcode: string): Promise<IProductResponse | null> {
-    const result = await ProductSchema.findOne({ barcode })
-    return result
+  async findByBarcode (bar_codes: string): Promise<IProductResponse | null> {
+    return ProductSchema.findOne({ bar_codes: bar_codes })
   }
 
   async findLowStock (page: number): Promise<PaginateResult<IProductResponse>> {

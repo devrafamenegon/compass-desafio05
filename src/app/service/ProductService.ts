@@ -9,7 +9,9 @@ import createWithCsv from '../validations/product/createWithCsv'
 
 class ProductService {
   async create (payload: IProductCreate): Promise<IProductResponse> {
-    const productWithBarcode = await ProductRepository.findByBarcode(payload.bar_codes);
+    const { bar_codes } = payload
+    const productWithBarcode = await ProductRepository.findByBarcode(bar_codes)
+
     if (productWithBarcode !== null) throw new BadRequestError('Barcode already exists')
     
     const result = await ProductRepository.create(payload)
