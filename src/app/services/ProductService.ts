@@ -1,6 +1,6 @@
 import { PaginateResult } from 'mongoose'
 import { IProductResponse, IProductCreate, IProductQuery, IProductCreateWithCsvResponse } from '../interfaces/IProduct'
-import ProductRepository from '../repository/ProductRepository'
+import ProductRepository from '../repositories/ProductRepository'
 import NotFoundError from '../errors/NotFoundError'
 import BadRequestError from '../errors/BadRequestError'
 import isValidUuid from '../utils/isValidUuid'

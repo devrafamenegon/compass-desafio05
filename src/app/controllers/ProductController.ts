@@ -1,7 +1,7 @@
 import { IMulterFile } from '../interfaces/IMulterFile'
 import type { IProductCreate } from 'app/interfaces/IProduct'
 import { Request, Response } from 'express'
-import ProductService from '../service/ProductService'
+import ProductService from '../services/ProductService'
 
 class ProductController {
   async create (req: Request, res: Response): Promise<Response> {

@@ -1,6 +1,6 @@
 import validateQuery from '../app/validations/product/queries'
 import { Router } from 'express'
-import ProductController from '../app/controller/ProductController'
+import ProductController from '../app/controllers/ProductController'
 import createValidation from '../app/validations/product/create'
 import updateValidation from '../app/validations/product/update'
 import multer from 'multer'
