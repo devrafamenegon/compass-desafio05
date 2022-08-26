@@ -21,6 +21,16 @@ const productReturn = {
   __v: expect.any(Number)
 }
 
+const commumPayload: IProductCreate = {
+  title: 'Batata Palito',
+  description: 'Batata Palito tradicional 9x9mm congelada pacote 2,5kg - McCain',
+  department: 'Congelados',
+  brand: 'McCain',
+  qtd_stock: 2856,
+  price: 29.54,
+  bar_codes: '6539055340301'
+}
+
 let productId: string
 
 describe('Product', () => {
@@ -39,17 +49,7 @@ describe('Product', () => {
     describe('basic positive tests', () => {
       describe('validate status code', () => {
         it('should return 201 HTTP status code', async () => {
-          const productPayload: IProductCreate = {
-            title: 'Batata Palito',
-            description: 'Batata Palito tradicional 9x9mm congelada pacote 2,5kg - McCain',
-            department: 'Congelados',
-            brand: 'McCain',
-            qtd_stock: 2856,
-            price: 29.54,
-            bar_codes: '6539055340301'
-          }
-
-          const response = await appTest.post('/api/v1/product').send(productPayload)
+          const response = await appTest.post('/api/v1/product').send(commumPayload)
           productId = response.body._id
           
           expect(response.statusCode).toBe(201)
@@ -145,21 +145,25 @@ describe('Product', () => {
     })
 
     describe('negative testing – valid input', () => {
-      const productPayload: IProductCreate = {
-        title: 'Batata Palito',
-        description: 'Batata Palito tradicional 9x9mm congelada pacote 2,5kg - McCain',
-        department: 'Congelados',
-        brand: 'McCain',
-        qtd_stock: 2856,
-        price: 29.54,
-        bar_codes: '6539055340301'
-      }
-
       describe('validate status code', () => {
-        it('should return 400 HTTP status code', async () => {
-          const response = await appTest.post('/api/v1/product').send(productPayload)
+        it('should return 400 HTTP status code when duplicated bar_codes is sended', async () => {
+          const response = await appTest.post('/api/v1/product').send(commumPayload)
           
           expect(response.statusCode).toBe(400)
+        })
+      })
+
+      describe('validate payload', () => {
+        it('should return a valid message in error object', async () => {
+          const response = await appTest.post('/api/v1/product').send(commumPayload)
+          
+          expect(response.statusCode).toBe(400)
+          expect(response.body).toEqual({
+            message: 'Bad Request Error',
+            details: [
+              { message: 'bar_codes already exists' }
+            ]
+          })
         })
       })
     })
