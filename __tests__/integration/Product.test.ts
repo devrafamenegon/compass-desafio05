@@ -120,7 +120,23 @@ describe('Product', () => {
         })
       })
       describe('validate headers', () => {
-        
+        it('should return a valid content-type header', async () => {
+          const productPayload: IProductCreate = {
+            title: 'Sabonete em Barra',
+            description: 'Sabonete em Barra Água de Coco e Alecrim unidade 85g - Flor de Ypê',
+            department: 'Higiene Pessoal e Perfumaria',
+            brand: 'Flor de Ypê',
+            qtd_stock: 3729,
+            price: 1.39,
+            bar_codes: '2485497064682'
+          }
+
+          const response = await appTest.post('/api/v1/product').send(productPayload)
+          productId = response.body._id
+          
+          expect(response.statusCode).toBe(201)
+          expect(response.headers['content-type']).toEqual(expect.stringContaining('application/json'))
+        })
       })
     })
 
