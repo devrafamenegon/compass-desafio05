@@ -87,6 +87,37 @@ describe('Product', () => {
             __v: expect.any(Number)
           }))
         })
+
+        it('should return a product object with valid values', async () => {
+          const productPayload: IProductCreate = {
+            title: 'Pão de Forma',
+            description: 'Pão de Forma Integral pacote 400g - Visconti',
+            department: 'ofertas',
+            brand: 'Visconti',
+            qtd_stock: 3468,
+            price: 5.35,
+            bar_codes: '5391671981336'
+          }
+
+          const response = await appTest.post('/api/v1/product').send(productPayload)
+          productId = response.body._id
+          
+          expect(response.statusCode).toBe(201)
+          expect(response.body).toEqual(expect.objectContaining({ 
+            _id: expect.any(String),
+            title: productPayload.title,
+            description: productPayload.description, 
+            department: productPayload.department,
+            brand: productPayload.brand,
+            price: productPayload.price,
+            qtd_stock: productPayload.qtd_stock,
+            stock_control_enabled: true,
+            bar_codes: productPayload.bar_codes,
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
+            __v: expect.any(Number)
+          }))
+        })
       })
       describe('validate headers', () => {
 
@@ -98,7 +129,9 @@ describe('Product', () => {
     })
 
     describe('negative testing – valid input', () => {
-      
+      describe('validate status code', () => {
+        
+      })
     })
 
     describe('negative testing – invalid input', () => {
