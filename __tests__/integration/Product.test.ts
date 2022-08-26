@@ -29,123 +29,108 @@ describe('Product', () => {
   })
   
   afterAll(async () => {
+    await ProductSchema.deleteMany({})
     server.close()
     await mongoose.disconnect();
     await mongoose.connection.close();
   });
 
-  describe('create product routes', () => {
-    const productPayload: IProductCreate = {
-      title: 'Product',
-      description: 'Description',
-      department: 'Department',
-      brand: 'Brand',
-      qtd_stock: 100,
-      price: 10.5,
-      bar_codes: '1234567891012'
-    }
+  describe('create product', () => {
+    describe('basic positive tests', () => {
+      describe('validate status code', () => {
 
-    const incompletProductPayload = {
-      title: 'Product',
-      description: 'Description',
-      bar_codes: '1234567891012'
-    }
+      })
 
-    const invalidProductPayload = {
-      title: 10,
-      description: { description: 'Description'},
-      department: ['Depart', 'ment'],
-      brand: null,
-      qtd_stock: -10,
-      price: 'high price',
-      bar_codes: 1204567891012
-    }
-
-    it('should create a product', async () => {
-      const response = await appTest.post('/api/v1/product').send(productPayload)
-      productId = response.body._id
+      describe('validate payload', () => {
       
-      expect(response.statusCode).toBe(201)
-      expect(response.body).toEqual(expect.objectContaining({ 
-        _id: expect.any(String),
-        title: productPayload.title,
-        description: productPayload.description, 
-        department: productPayload.department,
-        brand: productPayload.brand,
-        price: productPayload.price,
-        qtd_stock: productPayload.qtd_stock,
-        stock_control_enabled: (productPayload.qtd_stock === 0) ? false : true,
-        bar_codes: productPayload.bar_codes,
-        createdAt: expect.any(String),
-        updatedAt: expect.any(String),
-        __v: expect.any(Number)
-      }))
+      })
+      describe('validate headers', () => {
+
+      })
     })
 
-    it('should not create a product sending an empty product payload', async () => {
-      const response = await appTest.post('/api/v1/product').send()
-      expect(response.statusCode).toBe(400)
+    describe('positive + optional parameters', () => {
+      
     })
 
-    it('should not create a product sending an incomplet product payload', async () => {
-      const response = await appTest.post('/api/v1/product').send(incompletProductPayload)
-      expect(response.statusCode).toBe(400)
+    describe('negative testing – valid input', () => {
+      describe('validate status code', () => {
+        
+      })
     })
 
-    it('should not create a product sending an invalid product payload', async () => {
-      const response = await appTest.post('/api/v1/product').send(invalidProductPayload)
-      expect(response.statusCode).toBe(400)
+    describe('negative testing – invalid input', () => {
+
+    })
+
+    describe('destructive testing', () => {
+      
     })
   })
 
-  describe('get product routes', () => {
-    it('should get all products', async () => {
-      const response = await appTest.get('/api/v1/product').send()
-      expect(response.statusCode).toBe(200)
-    })
-  
-    it('should get one product', async () => {
-      const response = await appTest.get(`/api/v1/product/${productId}`).send()
-      expect(response.statusCode).toBe(200)
-      expect(response.body).toEqual(expect.objectContaining(productReturn))
-    })
-  })
-
-  describe('update product routes', () => {
-    it('should update all properties of one product', async () => {
-      const product: IProductCreate = {
-        title: 'Product 2',
-        description: 'Description 2',
-        department: 'Department 2',
-        brand: 'Brand 2',
-        qtd_stock: 100,
-        price: 10.5,
-        bar_codes: '1234567891012'
-      }
-
-      const response = await appTest.put(`/api/v1/product/${productId}`).send(product)
-      expect(response.statusCode).toBe(200)
-      expect(response.body).toEqual(expect.objectContaining(productReturn))
+  describe('get product', () => {
+    describe('basic positive tests', () => {
+      
     })
 
-    it('should update one or more properties of one product', async () => {
-      const product = {
-        title: 'Product 3',
-        description: 'Description 3',
-        department: 'Department 3',
-      }
+    describe('positive + optional parameters	', () => {
+      
+    })
 
-      const response = await appTest.patch(`/api/v1/product/${productId}`).send(product)
-      expect(response.statusCode).toBe(200)
-      expect(response.body).toEqual(expect.objectContaining(productReturn))
+    describe('negative testing – valid input', () => {
+      
+    })
+
+    describe('negative testing – invalid input', () => {
+
+    })
+
+    describe('destructive testing', () => {
+      
     })
   })
 
-  describe('delete product route', () => {
-    it('should delete one product', async () => {
-      const response = await appTest.delete(`/api/v1/product/${productId}`).send()
-      expect(response.statusCode).toBe(204)
-      expect(response.body).toEqual({})
+  describe('update product', () => {
+    describe('basic positive tests', () => {
+      
+    })
+
+    describe('positive + optional parameters	', () => {
+      
+    })
+
+    describe('negative testing – valid input', () => {
+      
+    })
+
+    describe('negative testing – invalid input', () => {
+
+    })
+
+    describe('destructive testing', () => {
+      
+    })
+  })
+
+  describe('delete product', () => {
+    describe('basic positive tests', () => {
+      
+    })
+
+    describe('positive + optional parameters	', () => {
+      
+    })
+
+    describe('negative testing – valid input', () => {
+      
+    })
+
+    describe('negative testing – invalid input', () => {
+
+    })
+
+    describe('destructive testing', () => {
+      
     })
   })
 })
