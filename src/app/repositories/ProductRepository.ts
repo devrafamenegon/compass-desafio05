@@ -19,6 +19,10 @@ class ProductRepository {
     return result
   }
 
+  async findByBarcode (bar_codes: string): Promise<IProductResponse | null> {
+    return ProductSchema.findOne({ bar_codes: bar_codes })
+  }
+
   async findLowStock (page: number): Promise<PaginateResult<IProductResponse>> {
     const limitDefault: number = Number(process.env.DEFAULT_LIMIT_PER_PAGE ?? 50)
     const result = await ProductSchema.paginate(
