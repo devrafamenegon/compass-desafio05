@@ -57,10 +57,39 @@ describe('Product', () => {
       })
 
       describe('validate payload', () => {
-        
+        it('should return a product object with valid structure', async () => {
+          const productPayload: IProductCreate = {
+            title: 'Leite Condensado',
+            description: 'Leite Condensado Semidesnatado tetra pak 395g - Piracanjuba',
+            department: 'ofertas',
+            brand: 'Piracanjuba',
+            qtd_stock: 966,
+            price: 6.44,
+            bar_codes: '4111327936030'
+          }
+
+          const response = await appTest.post('/api/v1/product').send(productPayload)
+          productId = response.body._id
+          
+          expect(response.statusCode).toBe(201)
+          expect(response.body).toEqual(expect.objectContaining({ 
+            _id: expect.any(String),
+            title: expect.any(String),
+            description: expect.any(String), 
+            department: expect.any(String),
+            brand: expect.any(String), 
+            price: expect.any(Number),
+            qtd_stock: expect.any(Number), 
+            stock_control_enabled: expect.any(Boolean),
+            bar_codes: expect.any(String),
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
+            __v: expect.any(Number)
+          }))
+        })
       })
       describe('validate headers', () => {
-        
+
       })
     })
 
@@ -69,9 +98,7 @@ describe('Product', () => {
     })
 
     describe('negative testing – valid input', () => {
-      describe('validate status code', () => {
-        
-      })
+      
     })
 
     describe('negative testing – invalid input', () => {
