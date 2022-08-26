@@ -38,14 +38,29 @@ describe('Product', () => {
   describe('create product', () => {
     describe('basic positive tests', () => {
       describe('validate status code', () => {
+        it('should return 201 HTTP status code', async () => {
+          const productPayload: IProductCreate = {
+            title: 'Batata Palito',
+            description: 'Batata Palito tradicional 9x9mm congelada pacote 2,5kg - McCain',
+            department: 'Congelados',
+            brand: 'McCain',
+            qtd_stock: 2856,
+            price: 29.54,
+            bar_codes: '6539055340301'
+          }
 
+          const response = await appTest.post('/api/v1/product').send(productPayload)
+          productId = response.body._id
+          
+          expect(response.statusCode).toBe(201)
+        })
       })
 
       describe('validate payload', () => {
-      
+        
       })
       describe('validate headers', () => {
-
+        
       })
     })
 
