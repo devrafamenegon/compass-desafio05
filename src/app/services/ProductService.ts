@@ -1,22 +1,25 @@
 import { PaginateResult } from 'mongoose'
 import { IProductResponse, IProductCreate, IProductQuery, IProductCreateWithCsvResponse } from '../interfaces/IProduct'
 import ProductRepository from '../repositories/ProductRepository'
-import NotFoundError from '../errors/NotFoundError'
 import BadRequestError from '../errors/BadRequestError'
 import isValidUuid from '../utils/isValidUuid'
 import { IMulterFile } from 'app/interfaces/IMulterFile'
 import createWithCsv from '../validations/product/createWithCsv'
+import InternalServerError from '../errors/InternalServerError'
+import ProductNotFoundError from '../errors/products/product_not_found.error'
+import ProductIdNotValidError from '../errors/products/product_id_not_valid.error'
+import BarCodesAlreadyExistsError from '../errors/products/barcodes_already_exists.error'
 
 class ProductService {
   async create (payload: IProductCreate): Promise<IProductResponse> {
     const { bar_codes } = payload
     const productWithBarcode = await ProductRepository.findByBarcode(bar_codes)
 
-    if (productWithBarcode !== null) throw new BadRequestError('Barcode already exists')
+    if (productWithBarcode !== null) throw new BarCodesAlreadyExistsError()
     
     const result = await ProductRepository.create(payload)
 
-    if (result === null) throw new BadRequestError('Product not created')
+    if (result === null) throw new InternalServerError()
     return result
   }
 
@@ -29,46 +32,46 @@ class ProductService {
     queryBuilded.stock_control_enabled = true
 
     const result: PaginateResult<IProductResponse> = await ProductRepository.findAll(queryBuilded, page ?? 1)
-    if (result.totalCount === 0) throw new NotFoundError('Product not found')
+    if (result.totalCount === 0) throw new ProductNotFoundError()
     return result
   }
 
   async findOne (id: string): Promise<IProductResponse> {
-    if (!isValidUuid(id)) throw new BadRequestError('Product id is not valid')
+    if (!isValidUuid(id)) throw new ProductIdNotValidError()
 
     const result = await ProductRepository.findOne(id)
-    if (result === null) throw new NotFoundError('Product not found')
+    if (result === null) throw new ProductNotFoundError()
     return result
   }
 
   async findLowStock (page: number): Promise<PaginateResult<IProductResponse>> {
     const result: PaginateResult<IProductResponse> = await ProductRepository.findLowStock(page ?? 1)
 
-    if (result.totalCount === 0) throw new NotFoundError('Product not found')
+    if (result.totalCount === 0) throw new ProductNotFoundError()
     return result
   }
 
   async update (id: string, payload: IProductCreate): Promise<IProductResponse> {
-    if (!isValidUuid(id)) throw new BadRequestError('Product id is not valid')
+    if (!isValidUuid(id)) throw new ProductIdNotValidError()
 
     payload.qtd_stock === 0 ? payload.stock_control_enabled = false : payload.stock_control_enabled = true
 
     const result = await ProductRepository.update(id, payload)
-    if (result === null) throw new NotFoundError('Product not found')
+    if (result === null) throw new ProductNotFoundError()
     return result
   }
 
   async delete (id: string): Promise<IProductResponse> {
-    if (!isValidUuid(id)) throw new BadRequestError('Product id is not valid')
+    if (!isValidUuid(id)) throw new ProductIdNotValidError()
 
     const result = await ProductRepository.delete(id)
-    if (result === null) throw new NotFoundError('Product not found')
+    if (result === null) throw new ProductNotFoundError()
     return result
   }
 
   async createWithCsv (file: IMulterFile): Promise<any> {
-    if (file.mimetype !== 'text/csv') throw new BadRequestError('File is not a csv')
-    if (file.size > 1000000) throw new BadRequestError('File is too big')
+    if (file.mimetype !== 'text/csv') throw new BadRequestError('file is not a csv')
+    if (file.size > 1000000) throw new BadRequestError('file is too big')
 
     const csvFile = file.buffer.toString('utf-8').trim().split('\n')
     csvFile.shift()
