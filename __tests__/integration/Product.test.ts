@@ -179,7 +179,17 @@ describe('Product', () => {
 
   describe('get product', () => {
     describe('basic positive tests', () => {
-      
+      describe('validate status code', () => {
+        it('should return 200 HTTP status code in get all products', async () => {
+          const response = await appTest.get('/api/v1/product/')
+          expect(response.statusCode).toBe(200)
+        })
+
+        it('should return 200 HTTP status code in get one product', async () => {
+          const response = await appTest.get(`/api/v1/product/${productId}`)
+          expect(response.statusCode).toBe(200)
+        })
+      })
     })
 
     describe('positive + optional parameters	', () => {
