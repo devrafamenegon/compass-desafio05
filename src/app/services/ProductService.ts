@@ -73,8 +73,10 @@ class ProductService {
     if (file.mimetype !== 'text/csv') throw new BadRequestError('file is not a csv')
     if (file.size > 1000000) throw new BadRequestError('file is too big')
 
-    const csvFile = file.buffer.toString('utf-8').trim().split('\n')
-    csvFile.shift()
+    const lines = file.buffer.toString('utf-8').trim().split('\n')
+    const headers = lines[0]
+
+    const csvFormat = headers.replace(/\r/g, '').split(',')
 
     const customResult: IProductCreateWithCsvResponse = {
       success: 0,
@@ -82,27 +84,23 @@ class ProductService {
       errors_details: []
     }
 
-    const regexCommaToDot = /("[^",]+),([^"]+")/g
+    lines.shift()
 
-    const csvFileFormated = csvFile.map((line) => {
-      const formatedLine = line.replace(/\r/g, '').replace(regexCommaToDot, function (match) {
-        return match.replace(',', '.').replace(/"/g, '')
-      })
-      return formatedLine
+    const products = lines.map(line => {
+      return line.replace(/\r/g, '').split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
     })
 
-    for (const line of csvFileFormated) {
-      const lineArray = line.split(',')
-
+    for await (const property of products) {
       const payload: IProductCreate = {
-        title: lineArray[0],
-        description: lineArray[1],
-        department: lineArray[2],
-        brand: lineArray[3],
-        price: parseFloat(lineArray[4]),
-        qtd_stock: parseInt(lineArray[5]),
-        bar_codes: lineArray[6]
-      }
+        ...csvFormat.reduce((acc, cur, i) => ({ ...acc, [cur]: property[i] }), {})
+      } as IProductCreate
+
+      property.forEach((value, index) => {
+        payload[csvFormat[index]] = value.replace(/"/g, '')
+        
+        payload.price = Number(payload.price.toString().replace(',', '.'))
+        payload.qtd_stock = Number(payload.qtd_stock)
+      })
 
       const payloadValidate = await createWithCsv(payload)
 
@@ -111,13 +109,14 @@ class ProductService {
         customResult.errors_details.push({
           title: payload.title,
           bar_codes: payload.bar_codes,
-          error: payloadValidate
+          error: payloadValidate.length > 1 ? payloadValidate : payloadValidate.toString()
         })
       } else {
         customResult.success += 1
         await this.create(payload)
       }
     }
+
     return customResult
   }
 }

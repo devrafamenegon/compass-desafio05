@@ -2,7 +2,7 @@
 import { IProductCreate } from '../../interfaces/IProduct'
 import Joi from 'joi'
 
-export default async (payload: IProductCreate): Promise<Object | void> => {
+export default async (payload: IProductCreate): Promise<string[] | string | null> => {
   const schema = Joi.object({
     title: Joi.string().required().trim(),
     description: Joi.string().required().trim(),
@@ -15,8 +15,12 @@ export default async (payload: IProductCreate): Promise<Object | void> => {
 
   const { error } = await schema.validate(payload, { abortEarly: false })
   const details = error?.details.map((detail) => {
-    return { message: detail.message }
+    return detail.message
   })
 
-  return details
+  if (details !== undefined) {
+    return details
+  }
+
+  return null
 }
