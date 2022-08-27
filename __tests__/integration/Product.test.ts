@@ -1,17 +1,17 @@
 import mongoose from 'mongoose'
-import supertest from 'supertest'
-import { IProductCreate, IProductUpdate } from '../../src/app/interfaces/IProduct'
-import ProductSchema from '../../src/app/schema/ProductSchema'
-import server from '../../src/server'
+import request from 'supertest'
+import { IProductCreate, IProductUpdate } from '../../src/api/interfaces/IProduct'
+import ProductSchema from '../../src/api/schemas/ProductSchema'
+import app from '../../src/app'
 
-const appTest = supertest(server)
+const appTest = request(app)
 
 const productReturn = {
   _id: expect.any(String),
   title: expect.any(String),
   description: expect.any(String), 
   department: expect.any(String),
-  brand: expect.any(String), 
+  brand: expect.any(String),
   price: expect.any(Number),
   qtd_stock: expect.any(Number), 
   stock_control_enabled: expect.any(Boolean),
@@ -44,17 +44,6 @@ const commumPayload: IProductCreate = {
 let productId: string
 
 describe('Product', () => {
-  beforeAll(async () => {
-    await ProductSchema.deleteMany({})
-  })
-  
-  afterAll(async () => {
-    await ProductSchema.deleteMany({})
-    server.close()
-    await mongoose.disconnect();
-    await mongoose.connection.close();
-  });
-
   describe('create product', () => {
     describe('basic positive tests', () => {
       describe('validate status code', () => {

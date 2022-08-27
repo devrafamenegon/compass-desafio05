@@ -1,5 +1,5 @@
 import { IMulterFile } from '../interfaces/IMulterFile'
-import type { IProductCreate } from 'app/interfaces/IProduct'
+import type { IProductCreate } from 'api/interfaces/IProduct'
 import { Request, Response } from 'express'
 import ProductService from '../services/ProductService'
 

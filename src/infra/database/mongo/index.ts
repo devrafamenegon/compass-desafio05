@@ -1,20 +1,14 @@
 import mongoose from 'mongoose'
-import dotenv from 'dotenv'
-
-dotenv.config({
-  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env'
-})
+import config from '../../../config/config'
 
 class Database {
-  constructor () {
-    void this.connect()
+  async connect (): Promise<typeof mongoose> {
+    return await mongoose.connect(config.database.url as string)
   }
 
-  async connect (): Promise<typeof mongoose> {
-    return await mongoose.connect(
-      process.env.MONGO_DB_URL ?? 'mongodb://localhost:27017/compassMart'
-    )
+  async disconnect() {
+    await mongoose.connection.close();
   }
 }
 
-export default new Database().connect()
+export default new Database()

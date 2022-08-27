@@ -1,4 +1,4 @@
-import isValidUuid from '../../src/app/utils/isValidUuid'
+import isValidUuid from '../../src/api/utils/isValidUuid'
 
 describe('isValidUuid()', () => {
   it('should return true if uuid is valid', () => {

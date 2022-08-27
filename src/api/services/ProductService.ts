@@ -3,7 +3,7 @@ import { IProductResponse, IProductCreate, IProductQuery, IProductCreateWithCsvR
 import ProductRepository from '../repositories/ProductRepository'
 import BadRequestError from '../errors/BadRequestError'
 import isValidUuid from '../utils/isValidUuid'
-import { IMulterFile } from 'app/interfaces/IMulterFile'
+import { IMulterFile } from 'api/interfaces/IMulterFile'
 import createWithCsv from '../validations/product/createWithCsv'
 import InternalServerError from '../errors/InternalServerError'
 import ProductNotFoundError from '../errors/products/product_not_found.error'

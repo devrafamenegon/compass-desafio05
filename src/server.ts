@@ -1,10 +1,6 @@
-import App from './app'
+import app from './app'
 
-const app = new App()
-
-const server = app.init().listen(process.env.PORT ?? 3000, () => {
+app.listen(process.env.PORT || 3000, () => {
   console.info(`App starting at http://localhost:${process.env.PORT ?? 3000}`)
   console.info(`Envs: ${process.env.TARGET ?? 'local'}`)
 })
-
-export default server

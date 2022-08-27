@@ -1,8 +1,8 @@
-import validateQuery from '../app/validations/product/queries'
+import validateQuery from '../api/validations/product/queries'
 import { Router } from 'express'
-import ProductController from '../app/controllers/ProductController'
-import createValidation from '../app/validations/product/create'
-import updateValidation from '../app/validations/product/update'
+import ProductController from '../api/controllers/ProductController'
+import createValidation from '../api/validations/product/create'
+import updateValidation from '../api/validations/product/update'
 import multer from 'multer'
 
 const router = Router()

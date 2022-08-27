@@ -1,12 +1,8 @@
-import dotenv from 'dotenv'
 import express from 'express'
-import cors from 'cors'
 import routes from './routes/index.router'
-import './infra/database/mongo/index'
+import Database from './infra/database/mongo/index'
 
-dotenv.config({
-  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env'
-})
+Database.connect()
 
 class App {
   public server: express.Application
@@ -23,12 +19,7 @@ class App {
 
   private middlewares (): void {
     this.server.use(express.json({}))
-    this.server.use(
-      express.urlencoded({
-        extended: true
-      })
-    )
-    this.server.use(cors())
+    this.server.use(express.urlencoded({ extended: true }))
   }
 
   private routes (): void {
@@ -36,4 +27,4 @@ class App {
   }
 }
 
-export default App
+export default new App().init()

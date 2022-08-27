@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "nodemon -r dotenv/config ./src/server.ts --ignore tests",
     "prepare": "husky install",
-    "test": "jest"
+    "test": "jest",
+    "lint-fix": "eslint . --fix",
+    "lint": "eslint ."
   },
   "license": "ISC",
   "devDependencies": {

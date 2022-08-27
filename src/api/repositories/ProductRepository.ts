@@ -1,5 +1,5 @@
 import { IProductCreate, IProductQuery, IProductResponse } from '../interfaces/IProduct'
-import ProductSchema from '../schema/ProductSchema'
+import ProductSchema from '../schemas/ProductSchema'
 import { PaginateResult } from 'mongoose'
 import customLabels from '../utils/paginate/product'
 
