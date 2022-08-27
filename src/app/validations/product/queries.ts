@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-invalid-void-type */
+import { IProductQuery } from '../../interfaces/IProduct'
 import { NextFunction, Request, Response } from 'express'
 import BadRequestError from '../../errors/BadRequestError'
 
@@ -6,7 +7,7 @@ const acceptedKeys = ['department', 'brand', 'page']
 
 export default async (req: Request, res: Response, next: NextFunction): Promise<Object | void> => {
   try {
-    const query: Object = req.query
+    const query: IProductQuery = req.query
 
     for (const key in query) {
       if (!acceptedKeys.includes(key)) {

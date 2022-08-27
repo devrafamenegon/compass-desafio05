@@ -41,6 +41,7 @@ export interface IProductCreate {
 export interface IProductQuery {
   department?: string
   brand?: string
+  page?: number
 }
 
 export interface IErrorsDetails {
