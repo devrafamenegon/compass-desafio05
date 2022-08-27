@@ -212,6 +212,22 @@ describe('Product', () => {
           
           expect(response.statusCode).toBe(200)
         })
+
+        it('should return 200 HTTP status code in put method', async () => {
+          const productPayload: IProductCreate = {
+            title: 'Hambúrguer de Picanha',
+            description: 'Hambúrguer de Picanha  120g - Brasa Burguers',
+            department: 'Congelados',
+            brand: 'Brasa Burguers',
+            qtd_stock: 2776,
+            price: 2.39,
+            bar_codes: '1597584908736'
+          }
+
+          const response = await appTest.put(`/api/v1/product/${productId}`).send(productPayload)
+          
+          expect(response.statusCode).toBe(200)
+        })
       })
     })
 
