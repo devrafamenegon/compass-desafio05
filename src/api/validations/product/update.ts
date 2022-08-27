@@ -2,6 +2,7 @@
 import BadRequestError from '../../errors/BadRequestError'
 import { Request, Response, NextFunction } from 'express'
 import Joi from 'joi'
+import formatJoiMessage from '../../utils/formatJoiMessage'
 
 export default async (req: Request, res: Response, next: NextFunction): Promise<Object | void> => {
   try {
@@ -34,9 +35,5 @@ export default async (req: Request, res: Response, next: NextFunction): Promise<
     if (error != null) throw error
     return next()
   } catch (error) {
-    return res.status(400).json({
-      message: 'Bad Request Error',
-      details: error.details.map(({ message }) => ({ message }))
-    })
-  }
+    return res.status(400).json(formatJoiMessage(error as Joi.ValidationError))  }
 }

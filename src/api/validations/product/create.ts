@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-invalid-void-type */
+import formatJoiMessage from '../../utils/formatJoiMessage'
 import { Request, Response, NextFunction } from 'express'
 import Joi from 'joi'
 
@@ -18,9 +19,6 @@ export default async (req: Request, res: Response, next: NextFunction): Promise<
     if (error != null) throw error
     return next()
   } catch (error) {
-    return res.status(400).json({
-      message: 'Bad Request Error',
-      details: error.details
-    })
+    return res.status(400).json(formatJoiMessage(error as Joi.ValidationError))
   }
 }
