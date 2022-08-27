@@ -236,7 +236,26 @@ describe('Product', () => {
     })
 
     describe('positive + optional parameters	', () => {
-      
+      describe('validate status code', () => {
+        it('should return 200 HTTP status code in get all products with brand param', async () => {
+          const response = await appTest.get('/api/v1/product?page=1')
+          expect(response.statusCode).toBe(200)
+        })
+        it('should return 200 HTTP status code in get all products with brand param', async () => {
+          const response = await appTest.get('/api/v1/product?brand=McCain')
+          expect(response.statusCode).toBe(200)
+        })
+
+        it('should return 200 HTTP status code in get all products with department param', async () => {
+          const response = await appTest.get('/api/v1/product?department=Congelados')
+          expect(response.statusCode).toBe(200)
+        })
+
+        it('should return 200 HTTP status code in get all products with brand and department params', async () => {
+          const response = await appTest.get('/api/v1/product?brand=McCain&department=Congelados')
+          expect(response.statusCode).toBe(200)
+        })
+      })
     })
 
     describe('negative testing – valid input', () => {
