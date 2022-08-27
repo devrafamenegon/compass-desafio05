@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import supertest from 'supertest'
-import { IProductCreate } from '../../src/app/interfaces/IProduct'
+import { IProductCreate, IProductUpdate } from '../../src/app/interfaces/IProduct'
 import ProductSchema from '../../src/app/schema/ProductSchema'
 import server from '../../src/server'
 
@@ -201,7 +201,18 @@ describe('Product', () => {
 
   describe('update product', () => {
     describe('basic positive tests', () => {
-      
+      describe('validate status code', () => {
+        it('should return 200 HTTP status code in patch method', async () => {
+          const productPayload: IProductUpdate = {
+            title: 'Anel de Cebola',
+            description: 'Anel de Cebola Empanado pacote 1,05kg - McCain',
+          }
+
+          const response = await appTest.patch(`/api/v1/product/${productId}`).send(productPayload)
+          
+          expect(response.statusCode).toBe(200)
+        })
+      })
     })
 
     describe('positive + optional parameters	', () => {
