@@ -1,0 +1,11 @@
+version: '3.4'
+services:
+  api:
+    image: node:16-alpine
+    container_name: compass-mart
+    ports:
+      - "${API_EXPOSED_PORT}:${API_CONTAINER_PORT}"
+    volumes:
+      - ./:/usr/src/app
+    working_dir: /usr/src/app
+    command: npm run dev

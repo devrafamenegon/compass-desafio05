@@ -1,39 +1,30 @@
-import dotenv from 'dotenv';
-import express from 'express';
-import cors from 'cors';
-import routes from './routes/index.router';
-import './infra/database/mongo/index';
+import express from 'express'
+import routes from './routes/index.router'
+import Database from './infra/database/mongo/index'
 
-dotenv.config({
-  path: '.env'
-});
+Database.connect()
 
 class App {
-  public server: express.Application;
+  public server: express.Application
 
-  public constructor() {
-    this.server = express();
-    this.middlewares();
-    this.routes();
+  public constructor () {
+    this.server = express()
+    this.middlewares()
+    this.routes()
   }
 
-  public init(): express.Application {
-    return this.server;
+  public init (): express.Application {
+    return this.server
   }
 
-  private middlewares(): void {
-    this.server.use(express.json({}));
-    this.server.use(
-      express.urlencoded({
-        extended: true
-      })
-    );
-    this.server.use(cors());
+  private middlewares (): void {
+    this.server.use(express.json({}))
+    this.server.use(express.urlencoded({ extended: true }))
   }
 
-  private routes(): void {
-    this.server.use(...routes);
+  private routes (): void {
+    this.server.use('/api/v1', ...routes)
   }
 }
 
-export default App;
+export default new App().init()

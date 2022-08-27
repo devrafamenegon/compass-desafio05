@@ -1,15 +1,14 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
+import config from '../../../config/config'
 
 class Database {
-  constructor() {
-    this.connect();
+  async connect (): Promise<typeof mongoose> {
+    return await mongoose.connect(config.database.url as string)
   }
 
-  connect() {
-    return mongoose.connect(
-      process.env.MONGO_DB_URL || 'mongodb://localhost:27017/bolsista'
-    );
+  async disconnect() {
+    await mongoose.connection.close();
   }
 }
 
-export default new Database().connect();
+export default new Database()
