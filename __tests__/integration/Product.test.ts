@@ -404,6 +404,35 @@ describe('Product', () => {
           }))
         })
       })
+
+      describe('validate headers', () => {
+        it('should return a valid content-type header in response of patch method', async () => {
+          const productPayload: IProductUpdate = {
+            title: 'Refrigerante',
+            description: 'Refrigerante lata 350ml - Coca-Cola,Bebidas',
+          }
+
+          const response = await appTest.patch(`/api/v1/product/${productId}`).send(productPayload)
+          expect(response.statusCode).toBe(200)
+          expect(response.headers['content-type']).toEqual(expect.stringContaining('application/json'))
+        })
+
+        it('should return a valid content-type header in response of put method', async () => {
+          const productPayload: IProductCreate = {
+            title: 'Seleta de Legumes',
+            description: 'Seleta de Legumes congelada pacote 1,02kg - Pratigel',
+            department: 'Congelados',
+            brand: 'Pratigel',
+            qtd_stock: 1640,
+            price: 9.36,
+            bar_codes: '4835433821676'
+          }
+
+          const response = await appTest.put(`/api/v1/product/${productId}`).send(productPayload)
+          expect(response.statusCode).toBe(200)
+          expect(response.headers['content-type']).toEqual(expect.stringContaining('application/json'))
+        })
+      });
     })
 
     describe('positive + optional parameters	', () => {
