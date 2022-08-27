@@ -1,9 +1,8 @@
 export default {
   docs: 'product',
-  page: 'currentPage',
-  totalPages: 'totalPages',
-  limit: 'pageSize',
-  totalDocs: 'totalCount',
+  page: 'offset',
+  totalPages: 'offsets',
+  totalDocs: 'total',
   offset: false,
   pagingCounter: false,
   hasPrevPage: false,
