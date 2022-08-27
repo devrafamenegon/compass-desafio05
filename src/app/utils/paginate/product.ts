@@ -1,7 +1,7 @@
 export default {
   docs: 'products',
-  page: 'offset',
-  totalPages: 'offsets',
+  page: 'page',
+  totalPages: 'totalPages',
   totalDocs: 'total',
   offset: false,
   pagingCounter: false,
