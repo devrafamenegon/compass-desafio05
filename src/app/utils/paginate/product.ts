@@ -1,5 +1,5 @@
 export default {
-  docs: 'product',
+  docs: 'products',
   page: 'offset',
   totalPages: 'offsets',
   totalDocs: 'total',

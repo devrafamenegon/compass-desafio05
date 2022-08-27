@@ -190,6 +190,36 @@ describe('Product', () => {
           expect(response.statusCode).toBe(200)
         })
       })
+
+      describe('validate payload', () => {
+        it('should return a list of products object with valid structure', async () => {
+          const response = await appTest.get('/api/v1/product')
+          
+          expect(response.statusCode).toBe(200)
+          expect(response.body).toEqual(expect.objectContaining({
+            limit: expect.any(Number),
+            offset: expect.any(Number),
+            offsets: expect.any(Number),
+            total: expect.any(Number),
+            products: expect.arrayContaining([
+              expect.objectContaining({
+                _id: expect.any(String),
+                title: expect.any(String),
+                description: expect.any(String), 
+                department: expect.any(String),
+                brand: expect.any(String), 
+                price: expect.any(Number),
+                qtd_stock: expect.any(Number), 
+                stock_control_enabled: expect.any(Boolean),
+                bar_codes: expect.any(String),
+                createdAt: expect.any(String),
+                updatedAt: expect.any(String),
+                __v: expect.any(Number)
+              })
+            ])
+          }))
+        })
+      })
     })
 
     describe('positive + optional parameters	', () => {
