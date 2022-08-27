@@ -19,6 +19,7 @@ A compasso entrou em um novo ramo de mercado, a CompassMart a qual é uma loja d
 <p>
   <img src="https://user-images.githubusercontent.com/65569815/182266557-f2d0c589-fe31-4d65-b867-cb40385066a0.svg" width="100">
   <img src="https://user-images.githubusercontent.com/65569815/182253645-6966537e-18ed-4c47-974b-22510cc3d834.png" width="100">
+  <img src="https://user-images.githubusercontent.com/65569815/187051607-c61423cb-a4c8-480c-9655-ff038a001ed7.jpg" width="100">
 </p>
 
 Para o desenvolvimento deste projeto, utilizamos a linguagem Typescript, NodeJS com Express, Mongoose para a conexão ao banco de dados Mongo.
@@ -29,6 +30,56 @@ Para o desenvolvimento deste projeto, utilizamos a linguagem Typescript, NodeJS 
 Antes de começar, você vai precisar ter instalado em sua máquina o Node.js, também é necessário uma collection no MongoDB Atlas e não se esqueça de criar a pasta `.env` seguindo o arquivo `.env.example`.
 
 Opcionalmente, você pode executar a API utilizando o [Docker]('https://www.docker.com/products/docker-desktop/'), para isso é necessário te-lo instalado em sua máquina.
+
+```json
+"dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "joi": "^17.6.0",
+    "mongoose": "^6.5.2",
+    "mongoose-paginate-v2": "^1.7.0",
+    "multer": "^1.4.5-lts.1"
+},
+"devDependencies": {
+    "@commitlint/cli": "^17.0.3",
+    "@commitlint/config-conventional": "^17.0.3",
+    "@types/cors": "^2.8.12",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.13",
+    "@types/jest": "^28.1.7",
+    "@types/joi": "^17.2.3",
+    "@typescript-eslint/eslint-plugin": "^5.33.1",
+    "@typescript-eslint/parser": "^5.32.0",
+    "eslint": "^8.22.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard-with-typescript": "^22.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.2.4",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-promise": "^6.0.0",
+    "husky": "^8.0.0",
+    "jest": "^28.1.3",
+    "nodemon": "^2.0.19",
+    "prettier": "^2.7.1",
+    "supertest": "^6.2.4",
+    "ts-jest": "^28.0.8",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.7.4"
+  }
+```
+
+## 🎭 Variáveis ambiente
+```bash
+PORT=3000
+MONGO_DB_URL=mongodb+srv://<user>:<password>@<cluster>.tn4rwt6.mongodb.net/<collection>?retryWrites=true&w=majority
+DEFAULT_LIMIT_PER_PAGE
+
+# if you want to use docker, you need to set the following environment variables
+API_EXPOSED_PORT
+API_CONTAINER_PORT
+```
 
 ## 🏁 Como inicializar
 
