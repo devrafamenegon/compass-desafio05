@@ -98,19 +98,9 @@ describe('Product', () => {
           const response = await appTest.post('/api/v1/product').send(productPayload)
           
           expect(response.statusCode).toBe(201)
-          expect(response.body).toEqual(expect.objectContaining({ 
-            _id: expect.any(String),
-            title: productPayload.title,
-            description: productPayload.description, 
-            department: productPayload.department,
-            brand: productPayload.brand,
-            price: productPayload.price,
-            qtd_stock: productPayload.qtd_stock,
-            stock_control_enabled: true,
-            bar_codes: productPayload.bar_codes,
-            createdAt: expect.any(String),
-            updatedAt: expect.any(String),
-            __v: expect.any(Number)
+          expect(response.body).toEqual(expect.objectContaining({
+            ...productReturn,
+            ...productPayload
           }))
         })
       })
@@ -204,19 +194,9 @@ describe('Product', () => {
           const response = await appTest.get(`/api/v1/product/${productId}`)
           
           expect(response.statusCode).toBe(200)
-          expect(response.body).toEqual(expect.objectContaining({ 
-            _id: expect.any(String),
-            title: commumPayload.title,
-            description: commumPayload.description, 
-            department: commumPayload.department,
-            brand: commumPayload.brand,
-            price: commumPayload.price,
-            qtd_stock: commumPayload.qtd_stock,
-            stock_control_enabled: true,
-            bar_codes: commumPayload.bar_codes,
-            createdAt: expect.any(String),
-            updatedAt: expect.any(String),
-            __v: expect.any(Number)
+          expect(response.body).toEqual(expect.objectContaining({
+            ...productReturn,
+            ...commumPayload
           }))
         })
       })
@@ -345,7 +325,6 @@ describe('Product', () => {
           }
 
           const response = await appTest.patch(`/api/v1/product/${productId}`).send(productPayload)
-          
           expect(response.statusCode).toBe(200)
         })
 
@@ -361,8 +340,68 @@ describe('Product', () => {
           }
 
           const response = await appTest.put(`/api/v1/product/${productId}`).send(productPayload)
-          
           expect(response.statusCode).toBe(200)
+        })
+      })
+
+      describe('validate payload', () => {
+        it('should return a product object with valid structure in patch', async () => {
+          const productPayload: IProductUpdate = {
+            title: 'Embalagem para Pizza',
+            description: 'Embalagem para Pizza Oitavada 35cm Estampado pacote 25 unidades - São José',
+          }
+
+          const response = await appTest.patch(`/api/v1/product/${productId}`).send(productPayload)
+          expect(response.statusCode).toBe(200)
+        })
+
+        it('should return a product object with valid structure in put', async () => {
+          const productPayload: IProductCreate = {
+            title: 'Leite em Pó',
+            description: 'Leite em Pó Integral pacote 400g - Italac,Frios e Laticínios',
+            department: 'Frios e Laticínios',
+            brand: 'Italac',
+            qtd_stock: 1400,
+            price: 19.01,
+            bar_codes: '4508633240598'
+          }
+
+          const response = await appTest.put(`/api/v1/product/${productId}`).send(productPayload)
+          expect(response.statusCode).toBe(200)
+          expect(response.body).toEqual(expect.objectContaining(productReturn))
+        })
+
+        it('should return a product object with valid values in patch', async () => {
+          const productPayload: IProductUpdate = {
+            title: 'Whisky',
+            description: 'Whisky Escocês garrafa 1 Litro - White Horse',
+          }
+
+          const response = await appTest.patch(`/api/v1/product/${productId}`).send(productPayload)
+          expect(response.statusCode).toBe(200)
+          expect(response.body).toEqual(expect.objectContaining({
+            ...productReturn,
+            ...productPayload
+          }))
+        })
+
+        it('should return a product object with valid values in put', async () => {
+          const productPayload: IProductCreate = {
+            title: 'Beterraba',
+            description: 'Beterraba  por kg - Dois Cunhados',
+            department: 'Hortifruti',
+            brand: 'Dois Cunhados',
+            qtd_stock: 364,
+            price: 8.99,
+            bar_codes: '2484081116237'
+          }
+
+          const response = await appTest.put(`/api/v1/product/${productId}`).send(productPayload)
+          expect(response.statusCode).toBe(200)
+          expect(response.body).toEqual(expect.objectContaining({
+            ...productReturn,
+            ...productPayload
+          }))
         })
       })
     })
