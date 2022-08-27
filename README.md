@@ -39,7 +39,7 @@ Depois você irá executar os seguintes comandos:
 
 ```bash
 # Clona este repositório
-$ git clone https://github.com/Desafio4Grupo2/CompassStoreExecutados.git
+$ git clone https://github.com/devrafamenegon/compass-desafio05.git
 
 # Acessa a pasta do projeto
 $ cd compass-desafio05
