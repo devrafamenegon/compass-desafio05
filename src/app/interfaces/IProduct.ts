@@ -38,6 +38,17 @@ export interface IProductCreate {
   bar_codes: string
 }
 
+export interface IProductUpdate {
+  title?: string
+  description?: string
+  department?: string
+  brand?: string
+  pricd?: number
+  qtd_stock?: number
+  stock_control_enabled?: boolean
+  bar_codes?: string
+}
+
 export interface IProductQuery {
   department?: string
   brand?: string
