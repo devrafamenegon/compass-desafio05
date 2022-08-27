@@ -69,23 +69,9 @@ describe('Product', () => {
           }
 
           const response = await appTest.post('/api/v1/product').send(productPayload)
-          productId = response.body._id
           
           expect(response.statusCode).toBe(201)
-          expect(response.body).toEqual(expect.objectContaining({ 
-            _id: expect.any(String),
-            title: expect.any(String),
-            description: expect.any(String), 
-            department: expect.any(String),
-            brand: expect.any(String), 
-            price: expect.any(Number),
-            qtd_stock: expect.any(Number), 
-            stock_control_enabled: expect.any(Boolean),
-            bar_codes: expect.any(String),
-            createdAt: expect.any(String),
-            updatedAt: expect.any(String),
-            __v: expect.any(Number)
-          }))
+          expect(response.body).toEqual(expect.objectContaining(productReturn))
         })
 
         it('should return a product object with valid values', async () => {
@@ -100,7 +86,6 @@ describe('Product', () => {
           }
 
           const response = await appTest.post('/api/v1/product').send(productPayload)
-          productId = response.body._id
           
           expect(response.statusCode).toBe(201)
           expect(response.body).toEqual(expect.objectContaining({ 
@@ -132,7 +117,6 @@ describe('Product', () => {
           }
 
           const response = await appTest.post('/api/v1/product').send(productPayload)
-          productId = response.body._id
           
           expect(response.statusCode).toBe(201)
           expect(response.headers['content-type']).toEqual(expect.stringContaining('application/json'))
@@ -192,7 +176,7 @@ describe('Product', () => {
       })
 
       describe('validate payload', () => {
-        it('should return a list of products object with valid structure', async () => {
+        it('should return a list of products object with valid structure in get all products', async () => {
           const response = await appTest.get('/api/v1/product')
           
           expect(response.statusCode).toBe(200)
@@ -202,21 +186,35 @@ describe('Product', () => {
             offsets: expect.any(Number),
             total: expect.any(Number),
             products: expect.arrayContaining([
-              expect.objectContaining({
-                _id: expect.any(String),
-                title: expect.any(String),
-                description: expect.any(String), 
-                department: expect.any(String),
-                brand: expect.any(String), 
-                price: expect.any(Number),
-                qtd_stock: expect.any(Number), 
-                stock_control_enabled: expect.any(Boolean),
-                bar_codes: expect.any(String),
-                createdAt: expect.any(String),
-                updatedAt: expect.any(String),
-                __v: expect.any(Number)
-              })
+              expect.objectContaining(productReturn)
             ])
+          }))
+        })
+
+        it('should return a list of products object with valid structure in get one product', async () => {
+          const response = await appTest.get(`/api/v1/product/${productId}`)
+          
+          expect(response.statusCode).toBe(200)
+          expect(response.body).toEqual(expect.objectContaining(productReturn))
+        })
+
+        it('should return a list of products object with valid values in get one product', async () => {
+          const response = await appTest.get(`/api/v1/product/${productId}`)
+          
+          expect(response.statusCode).toBe(200)
+          expect(response.body).toEqual(expect.objectContaining({ 
+            _id: expect.any(String),
+            title: commumPayload.title,
+            description: commumPayload.description, 
+            department: commumPayload.department,
+            brand: commumPayload.brand,
+            price: commumPayload.price,
+            qtd_stock: commumPayload.qtd_stock,
+            stock_control_enabled: true,
+            bar_codes: commumPayload.bar_codes,
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
+            __v: expect.any(Number)
           }))
         })
       })
