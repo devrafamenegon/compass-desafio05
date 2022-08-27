@@ -12,8 +12,7 @@ Desafio final do **Programa de Bolsas de NodeJS da [Compass.uol](https://compass
 * ### [Schemas](#-schemas)
 
 ## 📖 Solicitação do cliente
-A compasso entrou em um novo ramo de mercado, a CompassMart a qual é uma loja de departamento, onde seu foco é a comercialização de alimentos. Para essa
-API vai ser necessário desenvolver uma API em NodeJS que realize o controle de [Produtos](#product-table)
+A compasso entrou em um novo ramo de mercado, a CompassMart a qual é uma loja de departamento, onde seu foco é a comercialização de alimentos. Para essa API vai ser necessário desenvolver uma API em NodeJS que realize o controle de [Produtos](#product-table)
 
 ## 🧰 Tecnologias
 
@@ -92,7 +91,7 @@ $ npm run dev
 | `updatedAt`             | Date      | true     | false  |
 
 
-## ✋🏻 Autores
+## ✋🏻 Autor
 | <img src="https://avatars.githubusercontent.com/devrafamenegon" width=115>
 |---
 | <a href="https://github.com/devrafamenegon">Rafael Menegon</a> 
