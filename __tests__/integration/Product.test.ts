@@ -250,7 +250,13 @@ describe('Product', () => {
 
   describe('delete product', () => {
     describe('basic positive tests', () => {
-      
+      describe('validate status code', () => {
+        it('should return 204 HTTP status code', async () => {
+          const response = await appTest.delete(`/api/v1/product/${productId}`)
+          
+          expect(response.statusCode).toBe(204)
+        })
+      })
     })
 
     describe('positive + optional parameters	', () => {
