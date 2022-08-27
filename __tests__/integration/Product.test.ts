@@ -218,6 +218,21 @@ describe('Product', () => {
           }))
         })
       })
+      describe('validate headers', () => {
+        it('should return a valid content-type header in get all products', async () => {
+          const response = await appTest.get('/api/v1/product')
+          
+          expect(response.statusCode).toBe(200)
+          expect(response.headers['content-type']).toEqual(expect.stringContaining('application/json'))
+        })
+
+        it('should return a valid content-type header in get one product', async () => {
+          const response = await appTest.get(`/api/v1/product/${productId}`)
+          
+          expect(response.statusCode).toBe(200)
+          expect(response.headers['content-type']).toEqual(expect.stringContaining('application/json'))
+        })
+      })
     })
 
     describe('positive + optional parameters	', () => {
