@@ -241,20 +241,38 @@ describe('Product', () => {
           const response = await appTest.get('/api/v1/product?page=1')
           expect(response.statusCode).toBe(200)
         })
-        it('should return 200 HTTP status code in get all products with brand param', async () => {
+        it('(...) with brand param', async () => {
           const response = await appTest.get('/api/v1/product?brand=McCain')
           expect(response.statusCode).toBe(200)
         })
 
-        it('should return 200 HTTP status code in get all products with department param', async () => {
+        it('(...) with department param', async () => {
           const response = await appTest.get('/api/v1/product?department=Congelados')
           expect(response.statusCode).toBe(200)
         })
 
-        it('should return 200 HTTP status code in get all products with brand and department params', async () => {
-          const response = await appTest.get('/api/v1/product?brand=McCain&department=Congelados')
+        it('(...) with page, brand and department params', async () => {
+          const response = await appTest.get('/api/v1/product?page=1&brand=McCain&department=Congelados')
           expect(response.statusCode).toBe(200)
         })
+
+        it('(...) with page and brand params', async () => {
+          const response = await appTest.get('/api/v1/product?page=1&brand=McCain')
+          expect(response.statusCode).toBe(200)
+        })
+
+        it('(...) with page and department params', async () => {
+          const response = await appTest.get('/api/v1/product?page=1&department=Congelados')
+          expect(response.statusCode).toBe(200)
+        })
+
+        it('(...) with brand and department params', async () => {
+          const response = await appTest.get('/api/v1/product?page=1&department=Congelados')
+          expect(response.statusCode).toBe(200)
+        })
+      })
+      describe('validate payload', () => {
+        
       })
     })
 
