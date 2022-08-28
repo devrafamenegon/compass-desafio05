@@ -1,7 +1,5 @@
-import mongoose from 'mongoose'
 import request from 'supertest'
 import { IProductCreate, IProductUpdate } from '../../src/api/interfaces/IProduct'
-import ProductSchema from '../../src/api/schemas/ProductSchema'
 import app from '../../src/app'
 
 const appTest = request(app)
@@ -114,7 +112,7 @@ describe('Product', () => {
     })
 
     describe('positive + optional parameters', () => {
-      
+      // TODO
     })
 
     describe('negative testing – valid input', () => {
@@ -142,11 +140,11 @@ describe('Product', () => {
     })
 
     describe('negative testing – invalid input', () => {
-
+      // TODO
     })
 
     describe('destructive testing', () => {
-      
+      // TODO
     })
   })
 
@@ -292,15 +290,15 @@ describe('Product', () => {
     })
 
     describe('negative testing – valid input', () => {
-      
+      // TODO
     })
 
     describe('negative testing – invalid input', () => {
-
+      // TODO
     })
 
     describe('destructive testing', () => {
-      
+      // TODO
     })
   })
 
@@ -421,23 +419,23 @@ describe('Product', () => {
           expect(response.statusCode).toBe(200)
           expect(response.headers['content-type']).toEqual(expect.stringContaining('application/json'))
         })
-      });
+      })
     })
 
     describe('positive + optional parameters	', () => {
-      
+      // TODO
     })
 
     describe('negative testing – valid input', () => {
-      
+      // TODO
     })
 
     describe('negative testing – invalid input', () => {
-
+      // TODO
     })
 
     describe('destructive testing', () => {
-      
+      // TODO
     })
   })
 
@@ -450,22 +448,40 @@ describe('Product', () => {
           expect(response.statusCode).toBe(204)
         })
       })
+      describe('validate status code', () => {
+        it('should return empty body in response', async () => {
+          const { body } = await appTest.post('/api/v1/product').send(commumPayload)
+          const response = await appTest.delete(`/api/v1/product/${body._id}`)
+          
+          expect(response.statusCode).toBe(204)
+          expect(response.body).toEqual({})
+        })
+      })
+      describe('validate headers', () => {
+        it('should return a valid content-type header in response of patch method', async () => {
+          const { body } = await appTest.post('/api/v1/product').send(commumPayload)
+          const response = await appTest.delete(`/api/v1/product/${body._id}`)
+          
+          expect(response.statusCode).toBe(204)
+          expect(response.headers['content-type']).toEqual(undefined)
+        })
+      })
     })
 
     describe('positive + optional parameters	', () => {
-      
+      // TODO
     })
 
     describe('negative testing – valid input', () => {
-      
+      // TODO
     })
 
     describe('negative testing – invalid input', () => {
-
+      // TODO
     })
 
     describe('destructive testing', () => {
-      
+      // TODO
     })
   })
 })
