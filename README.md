@@ -14,6 +14,10 @@ Desafio final do **Programa de Bolsas de NodeJS da [Compass.uol](https://compass
 ## 📖 Solicitação do cliente
 A compasso entrou em um novo ramo de mercado, a CompassMart a qual é uma loja de departamento, onde seu foco é a comercialização de alimentos. Para essa API vai ser necessário desenvolver uma API em NodeJS que realize o controle de [Produtos](#product-table)
 
+
+## 📗 Documentação Swagger
+Para acessar a documentão completa da API, basta acessar este [link](https://app.swaggerhub.com/apis/devrafamenegon/CompassMart/1.0.0)
+
 ## 🧰 Tecnologias
 
 <p>
@@ -108,6 +112,15 @@ $ docker-compose up
 # Inicia a aplicação em localhost:3000
 $ npm run dev
 
+```
+
+## 🧪 Testes
+
+Após instalar e configurar todo o projeto, você pode rodar os testes com o comando abaixo
+
+```bash
+# Inicia os testes unitários e de integração
+$ npm run test
 ```
 
 ## 🚪 Endpoints
