@@ -1,1 +1,12 @@
-node_modules
+# Dependency directories
+node_modules/
+
+# Coverage directory used by tools like istanbul
+coverage
+
+# coverage JEST
+__test__/coverage/*
+
+# dotenv environment variables file
+.env
+.env.test
