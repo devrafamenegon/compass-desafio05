@@ -125,7 +125,7 @@ describe('Product', () => {
       })
 
       describe('validate payload', () => {
-        it('should return a valid message in error object', async () => {
+        it('should return a valid message in error object when try to create a duplicated bar_codes', async () => {
           const response = await appTest.post('/api/v1/product').send(commumPayload)
           
           expect(response.statusCode).toBe(400)
@@ -140,7 +140,58 @@ describe('Product', () => {
     })
 
     describe('negative testing – invalid input', () => {
-      // TODO
+      describe('validate status code', () => {
+        it('should return 400 HTTP status code when invalid bar_codes is send', async () => {
+          const productPayload = {
+            ...commumPayload,
+            bar_codes: '65390553403019'
+          }
+
+          const response = await appTest.post('/api/v1/product').send(productPayload)
+          
+          expect(response.statusCode).toBe(400)
+        })
+      })
+
+      describe('validate payload', () => {
+        it('should return a valid structure in error object when invalid bar_codes is send', async () => {
+          const productPayload = {
+            ...commumPayload,
+            bar_codes: '65390553403019'
+          }
+
+          const response = await appTest.post('/api/v1/product').send(productPayload)
+          
+          expect(response.statusCode).toBe(400)
+          expect(response.body).toEqual({
+            message: expect.any(String),
+            details: [
+              {
+                message: 'bar_codes length must be 13 characters long'
+              }
+            ]
+          })
+        })
+
+        it('should return a valid values in error object when invalid bar_codes is send', async () => {
+          const productPayload = {
+            ...commumPayload,
+            bar_codes: '65390553403019'
+          }
+
+          const response = await appTest.post('/api/v1/product').send(productPayload)
+          
+          expect(response.statusCode).toBe(400)
+          expect(response.body).toEqual({
+            message: 'Bad Request Error',
+            details: [
+              {
+                message: 'bar_codes length must be 13 characters long'
+              }
+            ]
+          })
+        })
+      })
     })
 
     describe('destructive testing', () => {
