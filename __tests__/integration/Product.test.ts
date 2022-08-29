@@ -165,9 +165,11 @@ describe('Product', () => {
           expect(response.statusCode).toBe(400)
           expect(response.body).toEqual({
             message: expect.any(String),
-            details: {
-              message: expect.any(String),
-            }
+            details: [
+              {
+                message: 'bar_codes length must be 13 characters long'
+              }
+            ]
           })
         })
 
@@ -182,9 +184,11 @@ describe('Product', () => {
           expect(response.statusCode).toBe(400)
           expect(response.body).toEqual({
             message: 'Bad Request Error',
-            details: {
-              message: 'bar_codes length must be 13 characters long'
-            }
+            details: [
+              {
+                message: 'bar_codes length must be 13 characters long'
+              }
+            ]
           })
         })
       })

@@ -7,6 +7,8 @@ export default function formatJoiMessage (error: Joi.ValidationError): Object {
 
   return {
     message: 'Bad Request Error',
-    details: { message: messages }
+    details: [
+      { message: messages }
+    ]
   }
 }
