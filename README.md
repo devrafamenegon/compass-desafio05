@@ -26,7 +26,7 @@ Para acessar a documentão completa da API, basta acessar este [link](https://ap
   <img src="https://user-images.githubusercontent.com/65569815/187051607-c61423cb-a4c8-480c-9655-ff038a001ed7.jpg" width="100">
 </p>
 
-Para o desenvolvimento deste projeto, utilizamos a linguagem Typescript, NodeJS com Express, Mongoose para a conexão ao banco de dados Mongo.
+Para o desenvolvimento deste projeto, utilizei a linguagem Typescript, NodeJS com Express, Mongoose para a conexão ao banco de dados Mongo.
 <br/>
 
 ## 🔑 Requisitos
