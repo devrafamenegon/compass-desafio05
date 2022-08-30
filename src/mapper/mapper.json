@@ -1,0 +1,34 @@
+{
+  "fields": [
+    {
+      "fieldProduct": "product.title",
+      "fieldMarket": "data.displayName",
+      "type": "text"
+    },
+    {
+      "fieldProduct": "product.brand",
+      "fieldMarket": "data.brand",
+      "type": "text"
+    },
+    {
+      "fieldProduct": "product.department",
+      "fieldMarket": "data.category.name",
+      "type": "text"
+    },
+    {
+      "fieldProduct": "product.price",
+      "fieldMarket": "data.price",
+      "type": "number"
+    },
+    {
+      "fieldProduct": "product.bar_codes",
+      "fieldMarket": "data.product.identifier.code",
+      "type": "text"
+    },
+    {
+      "fieldProduct": "product.stock_control_enabled",
+      "fieldMarket": "data.product.stock",
+      "type": "boolean"
+    }
+  ]
+}
