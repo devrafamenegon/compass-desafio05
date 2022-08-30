@@ -10,3 +10,6 @@ __test__/coverage/*
 # dotenv environment variables file
 .env
 .env.test
+
+# morgan logger path
+logs/
