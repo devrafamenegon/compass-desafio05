@@ -3,6 +3,8 @@ import routes from './routes/index.router'
 import Database from './infra/database/mongo/index'
 import handleError from './api/middlewares/errorHandler'
 import morganMiddleware from './config/logger'
+import swaggerUi from 'swagger-ui-express'
+import swaggerDocument from './static/swagger.json'
 
 Database.connect()
 
@@ -27,6 +29,7 @@ class App {
 
   private routes (): void {
     this.server.use('/api/v1', ...routes)
+    this.server.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
     this.server.use(handleError)
   }
 }
