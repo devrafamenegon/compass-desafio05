@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-invalid-void-type */
-import BadRequestError from '../../errors/BadRequestError'
+import BadRequest from '../../errors/BadRequestError'
 import { Request, Response, NextFunction } from 'express'
 import Joi from 'joi'
 import formatJoiMessage from '../../utils/formatJoiMessage'
@@ -28,7 +28,7 @@ export default async (req: Request, res: Response, next: NextFunction): Promise<
         bar_codes: Joi.string().optional().trim().length(13).pattern(/^[0-9]+$/)
       })
     } else {
-      throw new BadRequestError('Invalid method')
+      throw new BadRequest('Invalid method', 'Only PUT and PATCH methods are allowed')
     }
 
     const { error } = await schema.validate(req.body, { abortEarly: false })
