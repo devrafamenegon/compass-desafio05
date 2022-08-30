@@ -74,6 +74,16 @@ class ProductController {
       next(error)
     }
   }
+
+  async findOneWithMapper (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
+    try {
+      const { id } = req.params
+      const result = await ProductService.findOneWithMapper(id)
+      return res.status(200).json(result)
+    } catch (error) {
+      next(error)
+    }
+  }
 }
 
 export default new ProductController()
