@@ -1,6 +1,7 @@
 import express from 'express'
 import routes from './routes/index.router'
 import Database from './infra/database/mongo/index'
+import handleError from './api/middlewares/errorHandler'
 
 Database.connect()
 
@@ -24,6 +25,7 @@ class App {
 
   private routes (): void {
     this.server.use('/api/v1', ...routes)
+    this.server.use(handleError)
   }
 }
 

@@ -1,9 +1,12 @@
-export default class BadRequestError extends Error {
-  public readonly statusCode: number
+import { CustomError } from "./CustomError"
 
-  constructor (msg: string) {
-    super(msg)
-    this.name = 'Bad Request Error'
-    this.statusCode = 400
+export default class BadRequest extends CustomError {
+  constructor (message: string, description: string) {
+    super(
+      message, 
+      description,
+      'Invalid syntax for this request was provided.', 
+      400
+    )
   }
 }
