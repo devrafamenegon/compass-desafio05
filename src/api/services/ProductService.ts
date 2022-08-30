@@ -115,6 +115,12 @@ class ProductService {
     return customResult
   }
 
+  async findOneWithMapper (id: string) {
+    const result = await ProductRepository.findOne(id)
+    if (result === null) throw new NotFoundError(ErrorMessages.PRODUCT_NOT_FOUND, `Product not found with this id: ${id}`)
+    return result
+  }
+
   private async checkIfBarcodesAlreadyExists (barCodes: string) {
     const product = await ProductRepository.findByBarcode(barCodes)
     if (product !== null) 
