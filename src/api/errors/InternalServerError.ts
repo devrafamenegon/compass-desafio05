@@ -1,9 +1,13 @@
-export default class InternalServerError extends Error {
-  public readonly statusCode: number
+import { CustomError } from "./CustomError"
 
-  constructor () {
-    super('unexpected error')
-    this.name = 'Internal Server Error'
-    this.statusCode = 500
+export default class NotFoundError extends CustomError {
+  constructor (message: string) {
+    super(
+      message,
+      'Some internal error occurred',
+      'Unexpected internal server error.',
+      500
+    )
+    
   }
 }
