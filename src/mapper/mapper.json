@@ -1,34 +1,32 @@
 {
   "fields": [
     {
-      "fieldProduct": "product.title",
-      "fieldMarket": "data.displayName",
-      "type": "text"
-    },
-    {
-      "fieldProduct": "product.brand",
-      "fieldMarket": "data.brand",
+      "fieldProduct": "product.id",
+      "fieldMarket": "walmart.id",
       "type": "text"
     },
     {
       "fieldProduct": "product.department",
-      "fieldMarket": "data.category.name",
-      "type": "text"
+      "fieldMarket": "walmart.product.category.path.name",
+      "type": "array"
     },
     {
       "fieldProduct": "product.price",
-      "fieldMarket": "data.price",
+      "fieldMarket": "walmart.product.salesPrice",
       "type": "number"
     },
     {
-      "fieldProduct": "product.bar_codes",
-      "fieldMarket": "data.product.identifier.code",
+      "fieldProduct": "product.price",
+      "fieldMarket": "walmart.product.listPrice",
+      "optional": ["currency", "pt-BR"],
       "type": "text"
     },
     {
-      "fieldProduct": "product.stock_control_enabled",
-      "fieldMarket": "data.product.stock",
-      "type": "boolean"
+      "fieldProduct": "product.bar_codes",
+      "fieldMarket": "walmart.product.codes",
+      "optional": ["break", 2],
+      "type": "array"
     }
   ]
 }
+  
