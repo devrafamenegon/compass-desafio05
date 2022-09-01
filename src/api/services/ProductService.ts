@@ -8,6 +8,9 @@ import createWithCsv from '../validations/product/createWithCsv'
 import InternalServer from '../errors/InternalServerError'
 import { ErrorMessages } from '../utils/error_messages/products/error_messages'
 import NotFoundError from '../errors/NotFoundError'
+import mapper from '../../mapper/mapper.json'
+import { IMapper } from 'api/interfaces/IMapper'
+import Logger from 'api/utils/logger'
 
 class ProductService {
   async create (payload: IProductCreate): Promise<IProductResponse> {
@@ -118,7 +121,49 @@ class ProductService {
   async findOneWithMapper (id: string) {
     const result = await ProductRepository.findOne(id)
     if (result === null) throw new NotFoundError(ErrorMessages.PRODUCT_NOT_FOUND, `Product not found with this id: ${id}`)
-    return result
+
+    const { fields } = mapper as IMapper
+
+    const marketplaceObject = fields.map(field => {
+      const { type, fieldProduct, fieldMarket, optional } = field
+      
+      const productLocation = fieldProduct.replace('product.', '')
+      const marketLocation = fieldMarket.split('.')
+      
+      const object = {}
+      
+      marketLocation.reduce((object: Object, index: string) => {
+        const isLastIndex = marketLocation.indexOf(index) === marketLocation.length - 1
+        if (isLastIndex) {
+          type === 'text' ? object[index] = result[productLocation].toString()
+          : type === 'number' ? object[index] = Number(result[productLocation])
+          : type === 'boolean' ? object[index] = Boolean(result[productLocation])
+          : type === 'array' ? object[index] = Array(result[productLocation]) 
+          : object[index] = result[productLocation]
+
+          if (optional) {
+            const option = Object.values(optional)
+            const [ title, description ] = option
+            const stringObj = object[index].toString()
+            
+            if (title ==='break') {
+              object[index] = stringObj.match(/.{2}/g)
+              object[index].push(stringObj.charAt(stringObj.length - 1))
+            } else if (title ==='currency') {
+              object[index] = Number(object[index]).toLocaleString(description)
+            }
+            
+            return object[index]
+          }
+        } else {
+          return object[index] = {}
+        }
+      }, object)
+      
+      return object
+    })
+
+    return marketplaceObject
   }
 
   private async checkIfBarcodesAlreadyExists (barCodes: string) {
