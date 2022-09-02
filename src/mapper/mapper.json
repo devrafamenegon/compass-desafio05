@@ -18,7 +18,7 @@
     {
       "fieldProduct": "product.price",
       "fieldMarket": "walmart.product.listPrice",
-      "optional": ["currency", "pt-BR"],
+      "optional": ["currency", "en-US", "USD"],
       "type": "text"
     },
     {
