@@ -10,7 +10,7 @@ import { ErrorMessages } from '../utils/error_messages/products/error_messages'
 import NotFoundError from '../errors/NotFoundError'
 import mapper from '../../mapper/mapper.json'
 import { IMapper } from 'api/interfaces/IMapper'
-import Logger from 'api/utils/logger'
+import Logger from '../utils/logger'
 
 class ProductService {
   async create (payload: IProductCreate): Promise<IProductResponse> {
@@ -130,40 +130,48 @@ class ProductService {
       const productLocation = fieldProduct.replace('product.', '')
       const marketLocation = fieldMarket.split('.')
       
-      const object = {}
+      const marketObject = {}
       
-      marketLocation.reduce((object: Object, index: string) => {
-        const isLastIndex = marketLocation.indexOf(index) === marketLocation.length - 1
+      marketLocation.reduce((auxObj: Object, marketIndex: string) => {
+        const isLastIndex = marketLocation.indexOf(marketIndex) === marketLocation.length - 1
+        
         if (isLastIndex) {
-          type === 'text' ? object[index] = result[productLocation].toString()
-          : type === 'number' ? object[index] = Number(result[productLocation])
-          : type === 'boolean' ? object[index] = Boolean(result[productLocation])
-          : type === 'array' ? object[index] = Array(result[productLocation]) 
-          : object[index] = result[productLocation]
+          type === 'text' ? auxObj[marketIndex] = result[productLocation].toString()
+          : type === 'number' ? auxObj[marketIndex] = Number(result[productLocation])
+          : type === 'boolean' ? auxObj[marketIndex] = Boolean(result[productLocation])
+          : type === 'array' ? auxObj[marketIndex] = Array(result[productLocation]) 
+          : auxObj[marketIndex] = result[productLocation]
 
           if (optional) {
             const option = Object.values(optional)
-            const [ title, description ] = option
-            const stringObj = object[index].toString()
+            const [ title, locale, currency ] = option
+            const stringObj = auxObj[marketIndex].toString()
             
             if (title ==='break') {
-              object[index] = stringObj.match(/.{2}/g)
-              object[index].push(stringObj.charAt(stringObj.length - 1))
+              auxObj[marketIndex] = stringObj.match(/.{2}/g)
+              auxObj[marketIndex].push(stringObj.charAt(stringObj.length - 1))
             } else if (title ==='currency') {
-              object[index] = Number(object[index]).toLocaleString(description)
+              auxObj[marketIndex] = Number(auxObj[marketIndex]).toLocaleString(locale, { style: 'currency', currency: currency })
             }
             
-            return object[index]
+            return auxObj[marketIndex]
           }
         } else {
-          return object[index] = {}
+          return auxObj[marketIndex] = {}
         }
-      }, object)
+        
+      }, marketObject)
       
-      return object
+      return marketObject
     })
 
-    return marketplaceObject
+    let mergedMarketObject = {}
+
+    marketplaceObject.forEach(objLine => {
+      mergedMarketObject = this.mergeObjLines(mergedMarketObject, objLine)
+    })
+
+    return mergedMarketObject
   }
 
   private async checkIfBarcodesAlreadyExists (barCodes: string) {
@@ -183,6 +191,33 @@ class ProductService {
 
   private checkIfResultIsNotNull (result: IProductResponse | null, message: string) {
     if (result === null) throw new InternalServer(message)
+  }
+
+  private isObject (item): boolean {
+    return (item && typeof item === 'object' && !Array.isArray(item))
+  }
+
+  private mergeObjLines (target: Object, ...sources: Array<Object>): Object {
+    if (!sources.length) return target
+    const source = sources.shift()
+
+    if (this.isObject(target) && this.isObject(source)) {
+      
+      for (const key in source) {
+        if (this.isObject(source[key])) {
+          
+          if (!target[key]) {
+            Object.assign(target, {[key]: {}})
+          }
+          this.mergeObjLines(target[key], source[key])
+        } else {
+          Object.assign(target, { [key]: source[key] })
+        }
+      }
+      
+    }
+
+    return this.mergeObjLines(target, ...sources)
   }
 }
 
