@@ -12,6 +12,7 @@ router.post('/product/csv', multer().single('file', 'csv'), ProductController.cr
 router.get('/product', validateQuery, ProductController.findAll)
 router.get('/product/low_stock', ProductController.findLowStock)
 router.get('/product/:id', ProductController.findOne)
+router.get('/product/marketplace/:id', ProductController.findOneWithMapper)
 router.put('/product/:id', updateValidation, ProductController.update)
 router.patch('/product/:id', updateValidation, ProductController.update)
 router.delete('/product/:id', ProductController.delete)
