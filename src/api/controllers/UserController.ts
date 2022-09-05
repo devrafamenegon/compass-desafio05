@@ -5,7 +5,9 @@ import UserService from '../services/UserService'
 class UserController {
   async create (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
     try {
-      return res.status(201).json()
+      const payload: IUserCreate = req.body
+      const result = await UserService.create(payload)
+      return res.status(201).json(result)
     } catch (error) {
       next(error)
     }
