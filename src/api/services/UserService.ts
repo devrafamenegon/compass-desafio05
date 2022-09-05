@@ -6,6 +6,10 @@ class UserService {
     const result = await UserRepository.create(payload)
     return result
   }
+
+  async findOne (id: string): Promise<IUserResponse | null> {
+    return await UserRepository.findOne(id)
+  }
 }
 
 export default new UserService()
