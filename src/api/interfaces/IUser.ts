@@ -4,7 +4,7 @@ export interface IUser {
   password: string
 }
 
-export interface IUserCreate {
+export interface IUserResponse {
   _id: string
   email: string
   created_at?: Date
