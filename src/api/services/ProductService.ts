@@ -6,7 +6,7 @@ import isValidUuid from '../utils/isValidUuid'
 import { IMulterFile } from 'api/interfaces/IMulterFile'
 import createWithCsv from '../validations/product/createWithCsv'
 import InternalServer from '../errors/InternalServerError'
-import { ErrorMessages } from '../utils/error_messages/products/error_messages'
+import { ProductErrorMessages } from '../utils/error_messages/products/error_messages'
 import NotFoundError from '../errors/NotFoundError'
 import mapper from '../../mapper/mapper.json'
 import { IMapper } from 'api/interfaces/IMapper'
@@ -17,7 +17,7 @@ class ProductService {
     await this.checkIfBarcodesAlreadyExists(payload.bar_codes) 
     
     const result = await ProductRepository.create(payload)
-    this.checkIfResultIsNotNull(result, ErrorMessages.PRODUCT_NOT_CREATED)
+    this.checkIfResultIsNotNull(result, ProductErrorMessages.PRODUCT_NOT_CREATED)
     return result
   }
 
@@ -30,7 +30,7 @@ class ProductService {
     queryBuilded.stock_control_enabled = true
 
     const result: PaginateResult<IProductResponse> = await ProductRepository.findAll(queryBuilded, page ?? 1)
-    if (result.totalCount === 0) throw new NotFoundError(ErrorMessages.PRODUCT_NOT_FOUND, `Products not found with query: ${JSON.stringify(query)}`)
+    if (result.totalCount === 0) throw new NotFoundError(ProductErrorMessages.PRODUCT_NOT_FOUND, `Products not found with query: ${JSON.stringify(query)}`)
     return result
   }
 
@@ -38,14 +38,14 @@ class ProductService {
     await this.checkIfIsValidUuid(id)
 
     const result = await ProductRepository.findOne(id)
-    if (result === null) throw new NotFoundError(ErrorMessages.PRODUCT_NOT_FOUND, `Product not found with this id: ${id}`)
+    if (result === null) throw new NotFoundError(ProductErrorMessages.PRODUCT_NOT_FOUND, `Product not found with this id: ${id}`)
     return result
   }
 
   async findLowStock (page: number): Promise<PaginateResult<IProductResponse>> {
     const result: PaginateResult<IProductResponse> = await ProductRepository.findLowStock(page ?? 1)
 
-    if (result.totalCount === 0) throw new NotFoundError(ErrorMessages.PRODUCT_NOT_FOUND, 'No products found with low stock')
+    if (result.totalCount === 0) throw new NotFoundError(ProductErrorMessages.PRODUCT_NOT_FOUND, 'No products found with low stock')
     return result
   }
 
@@ -55,7 +55,7 @@ class ProductService {
     payload.qtd_stock === 0 ? payload.stock_control_enabled = false : payload.stock_control_enabled = true
 
     const result = await ProductRepository.update(id, payload)
-    this.checkIfResultIsNotNull(result, ErrorMessages.PRODUCT_NOT_UPDATED)
+    this.checkIfResultIsNotNull(result, ProductErrorMessages.PRODUCT_NOT_UPDATED)
     return result
   }
 
@@ -68,8 +68,8 @@ class ProductService {
   }
 
   async createWithCsv (file: IMulterFile): Promise<any> {
-    if (file.mimetype !== 'text/csv') throw new BadRequest(ErrorMessages.NOT_CSV_FILE, `${file.mimetype} is not a csv file`)
-    if (file.size > 1000000) throw new BadRequest(ErrorMessages.CSV_FILE_TOO_BIGGER, 'File is too big')
+    if (file.mimetype !== 'text/csv') throw new BadRequest(ProductErrorMessages.NOT_CSV_FILE, `${file.mimetype} is not a csv file`)
+    if (file.size > 1000000) throw new BadRequest(ProductErrorMessages.CSV_FILE_TOO_BIGGER, 'File is too big')
 
     const lines = file.buffer.toString('utf-8').trim().split('\n')
     const headers = lines[0]
@@ -120,7 +120,7 @@ class ProductService {
 
   async findOneWithMapper (id: string) {
     const result = await ProductRepository.findOne(id)
-    if (result === null) throw new NotFoundError(ErrorMessages.PRODUCT_NOT_FOUND, `Product not found with this id: ${id}`)
+    if (result === null) throw new NotFoundError(ProductErrorMessages.PRODUCT_NOT_FOUND, `Product not found with this id: ${id}`)
 
     const { fields } = mapper as IMapper
 
@@ -177,16 +177,16 @@ class ProductService {
   private async checkIfBarcodesAlreadyExists (barCodes: string) {
     const product = await ProductRepository.findByBarcode(barCodes)
     if (product !== null) 
-    throw new BadRequest(ErrorMessages.BARCODES_ALREADY_EXIST, 'You can not create a product with barcodes that already exist')
+    throw new BadRequest(ProductErrorMessages.BARCODES_ALREADY_EXIST, 'You can not create a product with barcodes that already exist')
   }
 
   private async checkIfIsValidUuid (id: string) {
-    if (!isValidUuid(id)) throw new BadRequest(ErrorMessages.INVALID_PRODUCT_ID, 'Id is not a valid uuid')
+    if (!isValidUuid(id)) throw new BadRequest(ProductErrorMessages.INVALID_PRODUCT_ID, 'Id is not a valid uuid')
   }
 
   private async checkIfProductInDatabase (id: string) {
     const product = await ProductRepository.findOne(id)
-    if (product === null) throw new NotFoundError(ErrorMessages.PRODUCT_NOT_FOUND, `Product not found with this id: ${id}`)
+    if (product === null) throw new NotFoundError(ProductErrorMessages.PRODUCT_NOT_FOUND, `Product not found with this id: ${id}`)
   }
 
   private checkIfResultIsNotNull (result: IProductResponse | null, message: string) {
