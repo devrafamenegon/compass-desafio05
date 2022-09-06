@@ -8,7 +8,7 @@ const SALT = Number(process.env.BCRYPT_SALT)
 const schema = new Schema<IUser>({
   _id: { type: String, default: randomUUID },
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  password: { type: String, required: true, select: false },
 },
 {
   timestamps: true
