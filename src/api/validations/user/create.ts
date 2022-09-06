@@ -1,23 +1,17 @@
-/* eslint-disable @typescript-eslint/no-invalid-void-type */
 import formatJoiMessage from '../../utils/formatJoiMessage'
 import { Request, Response, NextFunction } from 'express'
 import Joi from 'joi'
 import BadRequest from '../../errors/BadRequestError'
 import { ErrorMessages } from '../../utils/error_messages'
 
-export const createProductRules = Joi.object({
-  title: Joi.string().required().trim(),
-  description: Joi.string().required().trim(),
-  department: Joi.string().required().trim(),
-  brand: Joi.string().required().trim(),
-  price: Joi.number().required().min(0.01).max(1000),
-  qtd_stock: Joi.number().required().min(1).max(100000),
-  bar_codes: Joi.string().required().trim().length(13)
+export const createUserRules = Joi.object({
+  email: Joi.string().email().required().trim().max(320),
+  password: Joi.string().required().min(6).max(20).trim()
 })
 
 export default async (req: Request, res: Response, next: NextFunction): Promise<Object | void> => {
   try {
-    const { error } = await createProductRules.validate(req.body, { abortEarly: false })
+    const { error } = await createUserRules.validate(req.body, { abortEarly: false })
     if (error != null) throw error
     return next()
   } catch (error) {

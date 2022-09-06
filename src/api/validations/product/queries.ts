@@ -2,7 +2,7 @@
 import { IProductQuery } from '../../interfaces/IProduct'
 import { NextFunction, Request, Response } from 'express'
 import BadRequest from '../../errors/BadRequestError'
-import { ErrorMessages } from '../../utils/error_messages/products/error_messages'
+import { ProductErrorMessages } from '../../utils/error_messages/products/error_messages'
 
 const acceptedKeys = ['department', 'brand', 'page']
 
@@ -12,7 +12,7 @@ export default async (req: Request, res: Response, next: NextFunction): Promise<
 
     for (const key in query) {
       if (!acceptedKeys.includes(key)) {
-        throw new BadRequest(ErrorMessages.INVALID_QUERY_PARAMS, `Query ${key} is not a valid query parameter`)
+        throw new BadRequest(ProductErrorMessages.INVALID_QUERY_PARAMS, `Query ${key} is not a valid query parameter`)
       }
     }
   } catch (error) {
