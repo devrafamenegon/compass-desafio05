@@ -2,6 +2,8 @@
 import formatJoiMessage from '../../utils/formatJoiMessage'
 import { Request, Response, NextFunction } from 'express'
 import Joi from 'joi'
+import BadRequest from '../../errors/BadRequestError'
+import { ProductErrorMessages } from '../../utils/error_messages/products/error_messages'
 
 export const createProductRules = Joi.object({
   title: Joi.string().required().trim(),
@@ -19,6 +21,6 @@ export default async (req: Request, res: Response, next: NextFunction): Promise<
     if (error != null) throw error
     return next()
   } catch (error) {
-    return res.status(400).json(formatJoiMessage(error as Joi.ValidationError))
+    return next(new BadRequest(ProductErrorMessages.BAD_REQUEST, formatJoiMessage(error as Joi.ValidationError) as string ))
   }
 }
