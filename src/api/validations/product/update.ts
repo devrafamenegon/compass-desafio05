@@ -3,7 +3,7 @@ import BadRequest from '../../errors/BadRequestError'
 import { Request, Response, NextFunction } from 'express'
 import Joi from 'joi'
 import formatJoiMessage from '../../utils/formatJoiMessage'
-import { ProductErrorMessages } from '../../utils/error_messages/products/error_messages'
+import { ErrorMessages } from '../../utils/error_messages'
 
 export default async (req: Request, res: Response, next: NextFunction): Promise<Object | void> => {
   try {
@@ -36,6 +36,6 @@ export default async (req: Request, res: Response, next: NextFunction): Promise<
     if (error != null) throw error
     return next()
   } catch (error) {
-    return next(new BadRequest(ProductErrorMessages.BAD_REQUEST, formatJoiMessage(error as Joi.ValidationError) as string ))
+    return next(new BadRequest(ErrorMessages.BAD_REQUEST, formatJoiMessage(error as Joi.ValidationError) as string ))
   }
 }
