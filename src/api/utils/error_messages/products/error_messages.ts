@@ -1,4 +1,5 @@
 export abstract class ProductErrorMessages {
+  static readonly BAD_REQUEST = 'Invalid request body'
   static readonly BARCODES_ALREADY_EXIST: string = 'Barcodes already exist'
   static readonly PRODUCT_NOT_FOUND: string = 'Product not found'
   static readonly PRODUCT_NOT_CREATED: string = 'Product not created'
