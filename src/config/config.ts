@@ -5,5 +5,9 @@ dotenv.config({
 });
 
 export default {
-  database: { url: process.env.MONGO_DB_URL }
+  database: { url: process.env.MONGO_DB_URL },
+  auth: {
+    secret: process.env.JWT_SECRET,
+    expiresIn: process.env.JWT_EXPIRES_IN
+  }
 }
