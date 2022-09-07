@@ -1,6 +1,6 @@
 import { CustomError } from "./CustomError"
 
-export default class NotFoundError extends CustomError {
+export default class InternalServerError extends CustomError {
   constructor (message: string) {
     super(
       message,
