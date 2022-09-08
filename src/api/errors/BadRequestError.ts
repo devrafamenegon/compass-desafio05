@@ -1,6 +1,6 @@
 import { CustomError } from "./CustomError"
 
-export default class BadRequest extends CustomError {
+export default class BadRequestError extends CustomError {
   constructor (message: string, description: string) {
     super(
       message, 
