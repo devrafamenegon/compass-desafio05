@@ -1,7 +1,7 @@
 import { PaginateResult } from 'mongoose'
 import { IProductResponse, IProductCreate, IProductQuery, IProductCreateWithCsvResponse } from '../interfaces/IProduct'
 import ProductRepository from '../repositories/ProductRepository'
-import BadRequest from '../errors/BadRequestError'
+import BadRequestError from '../errors/BadRequestError'
 import isValidUuid from '../utils/isValidUuid'
 import { IMulterFile } from 'api/interfaces/IMulterFile'
 import createWithCsv from '../validations/product/createWithCsv'
@@ -53,6 +53,8 @@ class ProductService {
     await this.checkIfProductInDatabase(id)
     payload.qtd_stock === 0 ? payload.stock_control_enabled = false : payload.stock_control_enabled = true
 
+    await this.checkIfBarcodesAlreadyExists(payload.bar_codes) 
+    
     const result = await ProductRepository.update(id, payload)
     this.checkIfResultIsNotNull(result, ProductErrorMessages.PRODUCT_NOT_UPDATED)
     return result
@@ -67,8 +69,8 @@ class ProductService {
   }
 
   async createWithCsv (file: IMulterFile): Promise<any> {
-    if (file.mimetype !== 'text/csv') throw new BadRequest(ProductErrorMessages.NOT_CSV_FILE, `${file.mimetype} is not a csv file`)
-    if (file.size > 1000000) throw new BadRequest(ProductErrorMessages.CSV_FILE_TOO_BIGGER, 'File is too big')
+    if (file.mimetype !== 'text/csv') throw new BadRequestError(ProductErrorMessages.NOT_CSV_FILE, `${file.mimetype} is not a csv file`)
+    if (file.size > 1000000) throw new BadRequestError(ProductErrorMessages.CSV_FILE_TOO_BIGGER, 'File is too big')
 
     const lines = file.buffer.toString('utf-8').trim().split('\n')
     const headers = lines[0]
@@ -176,11 +178,11 @@ class ProductService {
   private async checkIfBarcodesAlreadyExists (barCodes: string) {
     const product = await ProductRepository.findByBarcode(barCodes)
     if (product !== null) 
-    throw new BadRequest(ProductErrorMessages.BARCODES_ALREADY_EXIST, 'You can not create a product with barcodes that already exist')
+    throw new BadRequestError(ProductErrorMessages.BARCODES_ALREADY_EXIST, 'You can not create a product with barcodes that already exist')
   }
 
   private async checkIfIsValidUuid (id: string) {
-    if (!isValidUuid(id)) throw new BadRequest(ProductErrorMessages.INVALID_PRODUCT_ID, 'Id is not a valid uuid')
+    if (!isValidUuid(id)) throw new BadRequestError(ProductErrorMessages.INVALID_PRODUCT_ID, 'Id is not a valid uuid')
   }
 
   private async checkIfProductInDatabase (id: string) {
