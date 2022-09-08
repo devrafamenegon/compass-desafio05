@@ -2,7 +2,7 @@
 import { IProductQuery } from '../../interfaces/IProduct'
 import { NextFunction, Request, Response } from 'express'
 import BadRequest from '../../errors/BadRequestError'
-import { ProductErrorMessages } from '../../utils/error_messages/products/error_messages'
+import { ProductErrorMessages } from '../../utils/error_messages/product'
 
 const acceptedKeys = ['department', 'brand', 'page']
 

@@ -1,7 +1,7 @@
 import UserRepository from "../repositories/UserRepository"
 import bcrypt from "bcrypt"
 import NotFoundError from "../errors/NotFoundError"
-import { UserErrorMessages } from "../utils/error_messages/users/error_messages"
+import { UserErrorMessages } from "../utils/error_messages/user"
 import BadRequest from "../errors/BadRequestError"
 import { createToken } from "api/utils/isValidToken"
 import InternalServerError from "../errors/InternalServerError"

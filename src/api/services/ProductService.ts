@@ -6,11 +6,10 @@ import isValidUuid from '../utils/isValidUuid'
 import { IMulterFile } from 'api/interfaces/IMulterFile'
 import createWithCsv from '../validations/product/createWithCsv'
 import InternalServer from '../errors/InternalServerError'
-import { ProductErrorMessages } from '../utils/error_messages/products/error_messages'
+import { ProductErrorMessages } from '../utils/error_messages/product'
 import NotFoundError from '../errors/NotFoundError'
 import mapper from '../../mapper/mapper.json'
 import { IMapper } from 'api/interfaces/IMapper'
-import Logger from '../utils/logger'
 
 class ProductService {
   async create (payload: IProductCreate): Promise<IProductResponse> {
