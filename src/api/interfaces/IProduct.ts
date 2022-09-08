@@ -1,4 +1,4 @@
-import { Types } from 'mongoose'
+import { Date, Types } from 'mongoose'
 
 export interface IProduct {
   _id?: Types.ObjectId
@@ -22,8 +22,8 @@ export interface IProductResponse {
   qtd_stock: number
   stock_control_enabled: boolean
   bar_codes: string
-  created_at?: Date
-  updated_at?: Date
+  createdAt?: Date
+  updatedAt?: Date
   __v?: number
 }
 
