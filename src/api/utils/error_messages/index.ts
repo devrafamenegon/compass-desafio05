@@ -1,3 +1,4 @@
-export abstract class ErrorMessages {
-  static readonly BAD_REQUEST = 'Invalid request body'
+export const ErrorMessages = {
+  BAD_REQUEST: 'Invalid request body',
+  INTERNAL_SERVER: 'Unexpected internal server error'
 }
