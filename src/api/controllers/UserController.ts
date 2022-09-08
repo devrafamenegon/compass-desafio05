@@ -6,7 +6,7 @@ class UserController {
   async login (req: Request, res: Response) {
     const { email, password } = req.body
     const token = await UserService.login(email, password)
-    return res.status(200).json({ token: token })
+    return res.status(200).json(token)
   }
 
   async create (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
