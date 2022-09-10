@@ -2,6 +2,9 @@ import { IProductCreate } from '../../src/api/interfaces/IProduct'
 import { IUser } from '../../src/api/interfaces/IUser'
 import { createToken } from '../../src/api/utils/tokenHandler'
 
+export const BASE_URL = '/api/v1'
+
+export const PRODUCT_ENDPOINT = `${BASE_URL}/product`
 export const PRODUCT: IProductCreate = {
   title: 'Batata Palito',
   description: 'Batata Palito tradicional 9x9mm congelada pacote 2,5kg - McCain',
@@ -12,6 +15,7 @@ export const PRODUCT: IProductCreate = {
   bar_codes: '6539055340301'
 }
 
+export const USER_ENDPOINT = `${BASE_URL}/user`
 export const USER: IUser = {
   email: 'rafael.menegon@gmail.com',
   password: '123456',
@@ -20,5 +24,6 @@ export const USER: IUser = {
 const valid_token: string = createToken(USER)
 
 export const TOKEN = { authorization: `Bearer ${valid_token}` }
+
 
 
