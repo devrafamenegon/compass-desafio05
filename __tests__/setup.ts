@@ -9,7 +9,7 @@ async function cleanDB() {
     collecttions.map(async (collection) => {
       await mongoose.connection.collections[collection].deleteMany({});
     })
-  );
+  )
 }
 
 global.beforeAll(async () => {
@@ -22,6 +22,6 @@ global.afterEach(async () => await cleanDB())
 global.afterAll(async () => {
   await cleanDB()
   await Database.disconnect()
-});
+})
 
-export const appTest = request(app)
+export const requestApp = request(app)
