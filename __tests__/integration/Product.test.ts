@@ -1,53 +1,17 @@
-import request from 'supertest'
 import { IProductCreate, IProductUpdate } from '../../src/api/interfaces/IProduct'
-import app from '../../src/app'
-
-const appTest = request(app)
-
-const productReturn = {
-  _id: expect.any(String),
-  title: expect.any(String),
-  description: expect.any(String), 
-  department: expect.any(String),
-  brand: expect.any(String),
-  price: expect.any(Number),
-  qtd_stock: expect.any(Number), 
-  stock_control_enabled: expect.any(Boolean),
-  bar_codes: expect.any(String),
-  createdAt: expect.any(String),
-  updatedAt: expect.any(String),
-  __v: expect.any(Number)
-}
-
-const productReturnWithPagination = {
-  limit: expect.any(Number),
-  page: expect.any(Number),
-  totalPages: expect.any(Number),
-  total: expect.any(Number),
-  products: expect.arrayContaining([
-    expect.objectContaining(productReturn)
-  ])
-}
-
-const commumPayload: IProductCreate = {
-  title: 'Batata Palito',
-  description: 'Batata Palito tradicional 9x9mm congelada pacote 2,5kg - McCain',
-  department: 'Congelados',
-  brand: 'McCain',
-  qtd_stock: 2856,
-  price: 29.54,
-  bar_codes: '6539055340301'
-}
-
-let productId: string
+import { requestApp } from '../setup'
+import { TOKEN } from '../utils/constants'
+import productFactory from '../utils/factories/ProductFactory'
+import { checkErrorFormat } from '../utils/formats/ErrorFormat'
+import { checkPaginateProductsFormat, checkProductFormat, productResponse } from '../utils/formats/ProductFormat'
 
 describe('Product', () => {
   describe('create product', () => {
     describe('basic positive tests', () => {
       describe('validate status code', () => {
         it('should return 201 HTTP status code', async () => {
-          const response = await appTest.post('/api/v1/product').send(commumPayload)
-          productId = response.body._id
+          const temp = productFactory()
+          const response = await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
           
           expect(response.statusCode).toBe(201)
         })
@@ -55,55 +19,28 @@ describe('Product', () => {
 
       describe('validate payload', () => {
         it('should return a product object with valid structure', async () => {
-          const productPayload: IProductCreate = {
-            title: 'Leite Condensado',
-            description: 'Leite Condensado Semidesnatado tetra pak 395g - Piracanjuba',
-            department: 'ofertas',
-            brand: 'Piracanjuba',
-            qtd_stock: 966,
-            price: 6.44,
-            bar_codes: '4111327936030'
-          }
-
-          const response = await appTest.post('/api/v1/product').send(productPayload)
+          const temp = productFactory()
+          const { body, status } = await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
           
-          expect(response.statusCode).toBe(201)
-          expect(response.body).toEqual(expect.objectContaining(productReturn))
+          expect(status).toBe(201)
+          checkProductFormat(body)
         })
 
         it('should return a product object with valid values', async () => {
-          const productPayload: IProductCreate = {
-            title: 'Pão de Forma',
-            description: 'Pão de Forma Integral pacote 400g - Visconti',
-            department: 'ofertas',
-            brand: 'Visconti',
-            qtd_stock: 3468,
-            price: 5.35,
-            bar_codes: '5391671981336'
-          }
-
-          const response = await appTest.post('/api/v1/product').send(productPayload)
+          const temp = productFactory()
+          const response = await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
           
           expect(response.statusCode).toBe(201)
           expect(response.body).toEqual(expect.objectContaining({
-            ...productReturn,
-            ...productPayload
+            ...productResponse,
+            ...temp
           }))
         })
       })
       describe('validate headers', () => {
         it('should return a valid content-type header', async () => {
-          const productPayload: IProductCreate = {
-            title: 'Sabonete em Barra',
-            description: 'Sabonete em Barra Água de Coco e Alecrim unidade 85g - Flor de Ypê',
-            department: 'Higiene Pessoal e Perfumaria',
-            brand: 'Flor de Ypê',
-            qtd_stock: 3729,
-            price: 1.39,
-            bar_codes: '2485497064682'
-          }
-
-          const response = await appTest.post('/api/v1/product').send(productPayload)
+          const temp = productFactory()
+          const response = await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
           
           expect(response.statusCode).toBe(201)
           expect(response.headers['content-type']).toEqual(expect.stringContaining('application/json'))
@@ -118,7 +55,10 @@ describe('Product', () => {
     describe('negative testing – valid input', () => {
       describe('validate status code', () => {
         it('should return 400 HTTP status code when duplicated bar_codes is sended', async () => {
-          const response = await appTest.post('/api/v1/product').send(commumPayload)
+          const temp = productFactory()
+          await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+          
+          const response = await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
           
           expect(response.statusCode).toBe(400)
         })
@@ -126,15 +66,13 @@ describe('Product', () => {
 
       describe('validate payload', () => {
         it('should return a valid message in error object when try to create a duplicated bar_codes', async () => {
-          const response = await appTest.post('/api/v1/product').send(commumPayload)
+          const temp = productFactory()
+          await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+          const { body, status } = await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
           
-          expect(response.statusCode).toBe(400)
-          expect(response.body).toEqual({
-            message: 'Bad Request Error',
-            details: [
-              { message: 'bar_codes already exists' }
-            ]
-          })
+          expect(status).toBe(400)
+          checkErrorFormat(body)
         })
       })
     })
@@ -142,12 +80,14 @@ describe('Product', () => {
     describe('negative testing – invalid input', () => {
       describe('validate status code', () => {
         it('should return 400 HTTP status code when invalid bar_codes is send', async () => {
-          const productPayload = {
-            ...commumPayload,
+          const temp = productFactory()
+          
+          const invalidBarcodes = {
+            ...temp,
             bar_codes: '65390553403019'
           }
 
-          const response = await appTest.post('/api/v1/product').send(productPayload)
+          const response = await requestApp.post('/api/v1/product').set(TOKEN).send(invalidBarcodes)
           
           expect(response.statusCode).toBe(400)
         })
@@ -155,41 +95,31 @@ describe('Product', () => {
 
       describe('validate payload', () => {
         it('should return a valid structure in error object when invalid bar_codes is send', async () => {
-          const productPayload = {
-            ...commumPayload,
+          const temp = productFactory()
+          
+          const invalidBarcodes = {
+            ...temp,
             bar_codes: '65390553403019'
           }
 
-          const response = await appTest.post('/api/v1/product').send(productPayload)
+          const { body, status } = await requestApp.post('/api/v1/product').set(TOKEN).send(invalidBarcodes)
           
-          expect(response.statusCode).toBe(400)
-          expect(response.body).toEqual({
-            message: expect.any(String),
-            details: [
-              {
-                message: 'bar_codes length must be 13 characters long'
-              }
-            ]
-          })
+          expect(status).toBe(400)
+          checkErrorFormat(body)
         })
 
         it('should return a valid values in error object when invalid bar_codes is send', async () => {
-          const productPayload = {
-            ...commumPayload,
+          const temp = productFactory()
+          
+          const invalidBarcodes = {
+            ...temp,
             bar_codes: '65390553403019'
           }
 
-          const response = await appTest.post('/api/v1/product').send(productPayload)
+          const { body, status } = await requestApp.post('/api/v1/product').set(TOKEN).send(invalidBarcodes)
           
-          expect(response.statusCode).toBe(400)
-          expect(response.body).toEqual({
-            message: 'Bad Request Error',
-            details: [
-              {
-                message: 'bar_codes length must be 13 characters long'
-              }
-            ]
-          })
+          expect(status).toBe(400)
+          checkErrorFormat(body)
         })
       })
     })
@@ -203,51 +133,72 @@ describe('Product', () => {
     describe('basic positive tests', () => {
       describe('validate status code', () => {
         it('should return 200 HTTP status code in get all products', async () => {
-          const response = await appTest.get('/api/v1/product/')
+          const temp = productFactory()
+          await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+          const response = await requestApp.get('/api/v1/product').set(TOKEN)
           expect(response.statusCode).toBe(200)
         })
 
         it('should return 200 HTTP status code in get one product', async () => {
-          const response = await appTest.get(`/api/v1/product/${productId}`)
+          const temp = productFactory()
+          const { body } = await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+          const response = await requestApp.get(`/api/v1/product/${body._id}`).set(TOKEN)
           expect(response.statusCode).toBe(200)
         })
       })
 
       describe('validate payload', () => {
         it('should return a list of products object with valid structure in get all products', async () => {
-          const response = await appTest.get('/api/v1/product')
+          const temp = productFactory()
+          await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+          const { body, status } = await requestApp.get('/api/v1/product').set(TOKEN)
           
-          expect(response.statusCode).toBe(200)
-          expect(response.body).toEqual(expect.objectContaining(productReturnWithPagination))
+          expect(status).toBe(200)
+          checkPaginateProductsFormat(body)
         })
 
         it('should return a list of products object with valid structure in get one product', async () => {
-          const response = await appTest.get(`/api/v1/product/${productId}`)
+          const temp = productFactory()
+          const { body } = await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+          const response = await requestApp.get(`/api/v1/product/${body._id}`).set(TOKEN)
           
-          expect(response.statusCode).toBe(200)
-          expect(response.body).toEqual(expect.objectContaining(productReturn))
+          expect(response.status).toBe(200)
+          checkProductFormat(response.body)
         })
 
         it('should return a list of products object with valid values in get one product', async () => {
-          const response = await appTest.get(`/api/v1/product/${productId}`)
+          const temp = productFactory()
+          const { body } = await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+          const response = await requestApp.get(`/api/v1/product/${body._id}`).set(TOKEN)
           
           expect(response.statusCode).toBe(200)
           expect(response.body).toEqual(expect.objectContaining({
-            ...productReturn,
-            ...commumPayload
+            ...productResponse,
+            ...temp
           }))
         })
       })
       describe('validate headers', () => {
         it('should return a valid content-type header in get all products', async () => {
-          const response = await appTest.get('/api/v1/product')
+          const temp = productFactory()
+          await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+          const response = await requestApp.get('/api/v1/product').set(TOKEN)
           
           expect(response.statusCode).toBe(200)
           expect(response.headers['content-type']).toEqual(expect.stringContaining('application/json'))
         })
 
         it('should return a valid content-type header in get one product', async () => {
-          const response = await appTest.get(`/api/v1/product/${productId}`)
+          const temp = productFactory()
+          const { body } = await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+          const response = await requestApp.get(`/api/v1/product/${body._id}`).set(TOKEN)
           
           expect(response.statusCode).toBe(200)
           expect(response.headers['content-type']).toEqual(expect.stringContaining('application/json'))
@@ -259,36 +210,57 @@ describe('Product', () => {
       describe('validate status code', () => {
         describe('should return 200 HTTP status code in get all products', () => {
           it('with page param', async () => {
-            const response = await appTest.get('/api/v1/product?page=1')
+            const temp = productFactory()
+            await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+            const response = await requestApp.get('/api/v1/product?page=1').set(TOKEN)
             expect(response.statusCode).toBe(200)
           })
           it('with brand param', async () => {
-            const response = await appTest.get('/api/v1/product?brand=McCain')
+            const temp = productFactory()
+            await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+            const response = await requestApp.get('/api/v1/product?brand=McCain').set(TOKEN)
             expect(response.statusCode).toBe(200)
           })
 
           it('with department param', async () => {
-            const response = await appTest.get('/api/v1/product?department=Congelados')
+            const temp = productFactory()
+            await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+            const response = await requestApp.get('/api/v1/product?department=Congelados').set(TOKEN)
             expect(response.statusCode).toBe(200)
           })
 
           it('with page, brand and department params', async () => {
-            const response = await appTest.get('/api/v1/product?page=1&brand=McCain&department=Congelados')
+            const temp = productFactory()
+            await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+            const response = await requestApp.get('/api/v1/product?page=1&brand=McCain&department=Congelados').set(TOKEN)
             expect(response.statusCode).toBe(200)
           })
 
           it('with page and brand params', async () => {
-            const response = await appTest.get('/api/v1/product?page=1&brand=McCain')
+            const temp = productFactory()
+            await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+            const response = await requestApp.get('/api/v1/product?page=1&brand=McCain').set(TOKEN)
             expect(response.statusCode).toBe(200)
           })
 
           it('with page and department params', async () => {
-            const response = await appTest.get('/api/v1/product?page=1&department=Congelados')
+            const temp = productFactory()
+            await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+            const response = await requestApp.get('/api/v1/product?page=1&department=Congelados').set(TOKEN)
             expect(response.statusCode).toBe(200)
           })
 
           it('with brand and department params', async () => {
-            const response = await appTest.get('/api/v1/product?brand=McCain&department=Congelados')
+            const temp = productFactory()
+            await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+            const response = await requestApp.get('/api/v1/product?brand=McCain&department=Congelados').set(TOKEN)
             expect(response.statusCode).toBe(200)
           })
         })
@@ -296,45 +268,72 @@ describe('Product', () => {
       describe('validate payload', () => {
         describe('should return a list of products object with valid structure in get all products', () => {
           it('with page param', async () => {
-            const response = await appTest.get('/api/v1/product?page=1')
-            expect(response.statusCode).toBe(200)
-            expect(response.body).toEqual(expect.objectContaining(productReturnWithPagination))
+            const temp = productFactory()
+            await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+            const { body, status } = await requestApp.get('/api/v1/product?page=1').set(TOKEN)
+            expect(status).toBe(200)
+            checkPaginateProductsFormat(body)
           })
 
           it('with brand param', async () => {
-            const response = await appTest.get('/api/v1/product?brand=McCain')
-            expect(response.statusCode).toBe(200)
-            expect(response.body).toEqual(expect.objectContaining(productReturnWithPagination))
+            const temp = productFactory()
+            await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+            const { brand } = temp
+
+            const { body, status } = await requestApp.get(`/api/v1/product?brand=${brand}`).set(TOKEN)
+            expect(status).toBe(200)
+            checkPaginateProductsFormat(body)
           })
 
           it('with department param', async () => {
-            const response = await appTest.get('/api/v1/product?department=Congelados')
-            expect(response.statusCode).toBe(200)
-            expect(response.body).toEqual(expect.objectContaining(productReturnWithPagination))
+            const temp = productFactory()
+            await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+            const { department } = temp
+
+            const { body, status } = await requestApp.get(`/api/v1/product?department=${department}`).set(TOKEN)
+            expect(status).toBe(200)
+            checkPaginateProductsFormat(body)
           })
 
           it('with page, brand and department params', async () => {
-            const response = await appTest.get('/api/v1/product?page=1&brand=McCain&department=Congelados')
-            expect(response.statusCode).toBe(200)
-            expect(response.body).toEqual(expect.objectContaining(productReturnWithPagination))
+            const temp = productFactory()
+            await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+            const { brand, department } = temp
+
+            const { body, status } = await requestApp.get(`/api/v1/product?page=1&brand=${brand}&department=${department}`).set(TOKEN)
+            expect(status).toBe(200)
+            checkPaginateProductsFormat(body)
           })
 
           it('with page and brand params', async () => {
-            const response = await appTest.get('/api/v1/product?page=1&brand=McCain')
-            expect(response.statusCode).toBe(200)
-            expect(response.body).toEqual(expect.objectContaining(productReturnWithPagination))
+            const temp = productFactory()
+            await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+            const { brand } = temp
+
+            const { body, status } = await requestApp.get(`/api/v1/product?page=1&brand=${brand}`).set(TOKEN)
+            expect(status).toBe(200)
+            checkPaginateProductsFormat(body)
           })
 
           it('with page and department params', async () => {
-            const response = await appTest.get('/api/v1/product?page=1&department=Congelados')
-            expect(response.statusCode).toBe(200)
-            expect(response.body).toEqual(expect.objectContaining(productReturnWithPagination))
+            const temp = productFactory()
+            await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+            const { department } = temp
+
+            const { body, status } = await requestApp.get(`/api/v1/product?page=1&department=${department}`).set(TOKEN)
+            expect(status).toBe(200)
+            checkPaginateProductsFormat(body)
           })
 
           it('with brand and department params', async () => {
-            const response = await appTest.get('/api/v1/product?brand=McCain&department=Congelados')
-            expect(response.statusCode).toBe(200)
-            expect(response.body).toEqual(expect.objectContaining(productReturnWithPagination))
+            const temp = productFactory()
+            await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+            const { brand, department } = temp
+
+            const { body, status } = await requestApp.get(`/api/v1/product?brand=${brand}&department=${department}`).set(TOKEN)
+            expect(status).toBe(200)
+            checkPaginateProductsFormat(body)
           })
         })
       })
@@ -357,74 +356,77 @@ describe('Product', () => {
     describe('basic positive tests', () => {
       describe('validate status code', () => {
         it('should return 200 HTTP status code in patch method', async () => {
-          const productPayload: IProductUpdate = {
+          const temp = productFactory()
+          const { body } = await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+          const product: IProductUpdate = {
             title: 'Anel de Cebola',
             description: 'Anel de Cebola Empanado pacote 1,05kg - McCain',
           }
 
-          const response = await appTest.patch(`/api/v1/product/${productId}`).send(productPayload)
+          const response = await requestApp.patch(`/api/v1/product/${body._id}`).set(TOKEN).send(product)
           expect(response.statusCode).toBe(200)
         })
 
         it('should return 200 HTTP status code in put method', async () => {
-          const productPayload: IProductCreate = {
-            title: 'Hambúrguer de Picanha',
-            description: 'Hambúrguer de Picanha  120g - Brasa Burguers',
-            department: 'Congelados',
-            brand: 'Brasa Burguers',
-            qtd_stock: 2776,
-            price: 2.39,
-            bar_codes: '1597584908736'
-          }
+          const temp = productFactory()
+          const { body } = await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
 
-          const response = await appTest.put(`/api/v1/product/${productId}`).send(productPayload)
+          const product: IProductCreate = productFactory()
+
+          const response = await requestApp.put(`/api/v1/product/${body._id}`).set(TOKEN).send(product)
           expect(response.statusCode).toBe(200)
         })
       })
 
       describe('validate payload', () => {
         it('should return a product object with valid structure in patch', async () => {
-          const productPayload: IProductUpdate = {
+          const temp = productFactory()
+          const { body } = await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+          const product: IProductUpdate = {
             title: 'Embalagem para Pizza',
             description: 'Embalagem para Pizza Oitavada 35cm Estampado pacote 25 unidades - São José',
           }
 
-          const response = await appTest.patch(`/api/v1/product/${productId}`).send(productPayload)
-          expect(response.statusCode).toBe(200)
+          const response = await requestApp.patch(`/api/v1/product/${body._id}`).set(TOKEN).send(product)
+          expect(response.status).toBe(200)
+          checkProductFormat(response.body)
         })
 
         it('should return a product object with valid structure in put', async () => {
-          const productPayload: IProductCreate = {
-            title: 'Leite em Pó',
-            description: 'Leite em Pó Integral pacote 400g - Italac,Frios e Laticínios',
-            department: 'Frios e Laticínios',
-            brand: 'Italac',
-            qtd_stock: 1400,
-            price: 19.01,
-            bar_codes: '4508633240598'
-          }
+          const temp = productFactory()
+          const { body } = await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+          
+          const product = productFactory()
 
-          const response = await appTest.put(`/api/v1/product/${productId}`).send(productPayload)
-          expect(response.statusCode).toBe(200)
-          expect(response.body).toEqual(expect.objectContaining(productReturn))
+          const response = await requestApp.put(`/api/v1/product/${body._id}`).set(TOKEN).send(product)
+          expect(response.status).toBe(200)
+          checkProductFormat(response.body)
         })
 
         it('should return a product object with valid values in patch', async () => {
-          const productPayload: IProductUpdate = {
+          const temp = productFactory()
+          const { body } = await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+          const product: IProductUpdate = {
             title: 'Whisky',
             description: 'Whisky Escocês garrafa 1 Litro - White Horse',
           }
 
-          const response = await appTest.patch(`/api/v1/product/${productId}`).send(productPayload)
+          const response = await requestApp.patch(`/api/v1/product/${body._id}`).set(TOKEN).send(product)
           expect(response.statusCode).toBe(200)
           expect(response.body).toEqual(expect.objectContaining({
-            ...productReturn,
-            ...productPayload
+            ...productResponse,
+            ...product
           }))
         })
 
         it('should return a product object with valid values in put', async () => {
-          const productPayload: IProductCreate = {
+          const temp = productFactory()
+          const { body } = await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+          const product: IProductCreate = {
             title: 'Beterraba',
             description: 'Beterraba  por kg - Dois Cunhados',
             department: 'Hortifruti',
@@ -434,29 +436,35 @@ describe('Product', () => {
             bar_codes: '2484081116237'
           }
 
-          const response = await appTest.put(`/api/v1/product/${productId}`).send(productPayload)
+          const response = await requestApp.put(`/api/v1/product/${body._id}`).set(TOKEN).send(product)
           expect(response.statusCode).toBe(200)
           expect(response.body).toEqual(expect.objectContaining({
-            ...productReturn,
-            ...productPayload
+            ...productResponse,
+            ...product
           }))
         })
       })
 
       describe('validate headers', () => {
         it('should return a valid content-type header in response of patch method', async () => {
-          const productPayload: IProductUpdate = {
+          const temp = productFactory()
+          const { body } = await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+          const product: IProductUpdate = {
             title: 'Refrigerante',
             description: 'Refrigerante lata 350ml - Coca-Cola,Bebidas',
           }
 
-          const response = await appTest.patch(`/api/v1/product/${productId}`).send(productPayload)
+          const response = await requestApp.patch(`/api/v1/product/${body._id}`).set(TOKEN).send(product)
           expect(response.statusCode).toBe(200)
           expect(response.headers['content-type']).toEqual(expect.stringContaining('application/json'))
         })
 
         it('should return a valid content-type header in response of put method', async () => {
-          const productPayload: IProductCreate = {
+          const temp = productFactory()
+          const { body } = await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+          const product: IProductCreate = {
             title: 'Seleta de Legumes',
             description: 'Seleta de Legumes congelada pacote 1,02kg - Pratigel',
             department: 'Congelados',
@@ -466,7 +474,7 @@ describe('Product', () => {
             bar_codes: '4835433821676'
           }
 
-          const response = await appTest.put(`/api/v1/product/${productId}`).send(productPayload)
+          const response = await requestApp.put(`/api/v1/product/${body._id}`).set(TOKEN).send(product)
           expect(response.statusCode).toBe(200)
           expect(response.headers['content-type']).toEqual(expect.stringContaining('application/json'))
         })
@@ -494,15 +502,20 @@ describe('Product', () => {
     describe('basic positive tests', () => {
       describe('validate status code', () => {
         it('should return 204 HTTP status code', async () => {
-          const response = await appTest.delete(`/api/v1/product/${productId}`)
+          const temp = productFactory()
+          const { body } = await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+          const response = await requestApp.delete(`/api/v1/product/${body._id}`).set(TOKEN)
           
           expect(response.statusCode).toBe(204)
         })
       })
       describe('validate status code', () => {
         it('should return empty body in response', async () => {
-          const { body } = await appTest.post('/api/v1/product').send(commumPayload)
-          const response = await appTest.delete(`/api/v1/product/${body._id}`)
+          const temp = productFactory()
+          const { body } = await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+
+          const response = await requestApp.delete(`/api/v1/product/${body._id}`).set(TOKEN)
           
           expect(response.statusCode).toBe(204)
           expect(response.body).toEqual({})
@@ -510,8 +523,10 @@ describe('Product', () => {
       })
       describe('validate headers', () => {
         it('should return a valid content-type header in response of patch method', async () => {
-          const { body } = await appTest.post('/api/v1/product').send(commumPayload)
-          const response = await appTest.delete(`/api/v1/product/${body._id}`)
+          const temp = productFactory()
+          const { body } = await requestApp.post('/api/v1/product').set(TOKEN).send(temp)
+        
+          const response = await requestApp.delete(`/api/v1/product/${body._id}`).set(TOKEN)
           
           expect(response.statusCode).toBe(204)
           expect(response.headers['content-type']).toEqual(undefined)
