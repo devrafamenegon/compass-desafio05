@@ -10,8 +10,8 @@ export const productResponse: IProductResponse = {
   qtd_stock: expect.any(Number), 
   stock_control_enabled: expect.any(Boolean),
   bar_codes: expect.any(String),
-  createdAt: expect.any(String),
-  updatedAt: expect.any(String),
+  created_at: expect.any(String),
+  updated_at: expect.any(String),
   __v: expect.any(Number)
 }
 
