@@ -22,8 +22,8 @@ export interface IProductResponse {
   qtd_stock: number
   stock_control_enabled: boolean
   bar_codes: string
-  createdAt?: Date
-  updatedAt?: Date
+  created_at?: Date
+  updated_at?: Date
   __v?: number
 }
 

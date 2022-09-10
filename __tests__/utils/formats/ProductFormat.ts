@@ -30,5 +30,5 @@ export const checkProductFormat = (body) => {
 }
 
 export const checkPaginateProductsFormat = (body) => {
-  expect(body).toEqual(paginateProductsResponse)
+  expect(body).toEqual(expect.objectContaining(paginateProductsResponse))
 }
