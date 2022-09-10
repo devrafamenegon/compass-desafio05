@@ -8,6 +8,14 @@ import { createToken } from "../utils/tokenHandler"
 import InternalServerError from "../errors/InternalServerError"
 
 class UserService {
+  async create (payload: IUserCreate): Promise<IUserResponse> {
+    const existingUser = await UserRepository.findOneByEmail(payload.email)
+    if (existingUser) throw new BadRequestError(UserErrorMessages.USER_EMAIL_DUPLICATED, 'User with this email already exists')
+
+    const result = await UserRepository.create(payload)
+    return result
+  }
+
   async login (email: string, password: string) {
     const user = await UserRepository.findOneByEmail(email)
     if (!user) throw new NotFoundError(UserErrorMessages.USER_NOT_FOUND, 'User with this email not found')
@@ -19,15 +27,6 @@ class UserService {
     if (!token) throw new InternalServerError(UserErrorMessages.TOKEN_NOT_CREATED)
   
     return { token: token }
-  }
-
-  async create (payload: IUserCreate): Promise<IUserResponse> {
-    const result = await UserRepository.create(payload)
-    return result
-  }
-
-  async findOne (id: string): Promise<IUserResponse | null> {
-    return await UserRepository.findOne(id)
   }
 }
 
