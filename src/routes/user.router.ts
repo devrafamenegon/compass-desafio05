@@ -9,5 +9,4 @@ const router = Router()
 
 router.post(prefix, registerValidation, UserController.register)
 router.post(`${prefix}/login`, loginValidation, UserController.login)
-router.get(prefix, UserController.findAll)
 export default router
