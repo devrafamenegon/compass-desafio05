@@ -1,20 +1,35 @@
-import mongoose, { Schema } from 'mongoose'
+import { Schema, model } from 'mongoose'
 import { IUser } from '../interfaces/IUser'
 import { randomUUID } from 'crypto'
 import bcrypt from 'bcrypt'
 
 const SALT = Number(process.env.BCRYPT_SALT)
 
-const schema = new Schema<IUser>({
+const UserSchema = new Schema<IUser>({
   _id: { type: String, default: randomUUID },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true, select: false },
+  email: { 
+    type: String, 
+    required: true, 
+    unique: true,
+    lowercase: true,
+    trim: true
+  },
+  password: { 
+    type: String, 
+    required: true,
+    trim: true, 
+    select: false
+  },
 },
 {
-  timestamps: true
+  timestamps: {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+  },
+  versionKey: false,
 })
 
-schema.pre('save', function(next) {
+UserSchema.pre('save', function(next) {
   let user = this
 
   // only hash the password if it has been modified (or is new)
@@ -34,13 +49,13 @@ schema.pre('save', function(next) {
   })
 })
 
-schema.methods.comparePassword = function(candidatePassword, cb) {
+UserSchema.methods.comparePassword = function(candidatePassword, cb) {
   bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
     if (err) return cb(err)
     cb(null, isMatch)
   })
 }
 
-const User = mongoose.model<IUser>('User', schema)
+export default model<IUser>('User', UserSchema)
 
-export default User
+
