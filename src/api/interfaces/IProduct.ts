@@ -1,7 +1,7 @@
-import { Date, Types } from 'mongoose'
+import { Date } from 'mongoose'
 
 export interface IProduct {
-  _id?: Types.ObjectId
+  _id?: string
   title: string
   description: string
   department: string
@@ -13,7 +13,7 @@ export interface IProduct {
 }
 
 export interface IProductResponse {
-  _id: Types.ObjectId
+  _id: string
   title: string
   description: string
   department: string
@@ -24,7 +24,6 @@ export interface IProductResponse {
   bar_codes: string
   created_at?: Date
   updated_at?: Date
-  __v?: number
 }
 
 export interface IProductCreate {
