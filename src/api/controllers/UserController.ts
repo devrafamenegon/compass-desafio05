@@ -9,11 +9,20 @@ class UserController {
     return res.status(200).json(token)
   }
 
-  async create (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
+  async register (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
     try {
       const payload: IUserCreate = req.body
-      const result = await UserService.create(payload)
+      const result = await UserService.register(payload)
       return res.status(201).json(result)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async findAll (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
+    try {
+      const result = await UserService.findAll()
+      return res.status(200).json(result)
     } catch (error) {
       next(error)
     }
