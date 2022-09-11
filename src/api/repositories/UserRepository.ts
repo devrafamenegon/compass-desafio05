@@ -1,13 +1,17 @@
 import UserSchema from '../schemas/UserSchema'
-import { IUser, IUserCreate, IUserResponse } from '../interfaces/IUser'
+import { IUser, IUserRegister, IUserResponse } from '../interfaces/IUser'
 
 class UserRepository {
-  async create (payload: IUserCreate): Promise<IUserResponse> {
+  async register (payload: IUserRegister): Promise<IUserResponse> {
     return await UserSchema.create(payload)
   }
 
-  async findOne (id: string): Promise<IUserResponse | null> {
+  async findOne (id: string): Promise<IUser | null> {
     return await UserSchema.findById(id).select('+password')
+  }
+
+  async findAll (): Promise<IUserResponse[]> {
+    return await UserSchema.find()
   }
 
   async findOneByEmail (email: string): Promise<IUser | null> {
