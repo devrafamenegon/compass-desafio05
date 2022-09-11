@@ -12,7 +12,6 @@ export const productResponse: IProductResponse = {
   bar_codes: expect.any(String),
   created_at: expect.any(String),
   updated_at: expect.any(String),
-  __v: expect.any(Number)
 }
 
 export const paginateProductsResponse = {

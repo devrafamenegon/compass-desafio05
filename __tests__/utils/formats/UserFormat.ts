@@ -5,7 +5,6 @@ export const userResponse: IUserResponse = {
   email: expect.any(String),
   created_at: expect.any(String),
   updated_at: expect.any(String),
-  __v: expect.any(Number)
 }
 
 export const checkUserFormat = (body) => {
