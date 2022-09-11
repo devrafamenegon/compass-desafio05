@@ -9,6 +9,14 @@ class Database {
   async disconnect() {
     await mongoose.connection.close();
   }
+  
+  async clear() {
+    const collections = mongoose.connection.collections;
+    for (const key in collections) {
+      const collection = collections[key];
+      await collection.deleteMany({});
+    }
+  }
 }
 
 export default new Database()
