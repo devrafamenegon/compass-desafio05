@@ -14,6 +14,8 @@ Desafio final do **Programa de Bolsas de NodeJS da [Compass.uol](https://compass
 ## 📖 Solicitação do cliente
 A compasso entrou em um novo ramo de mercado, a CompassMart a qual é uma loja de departamento, onde seu foco é a comercialização de alimentos. Para essa API vai ser necessário desenvolver uma API em NodeJS que realize o controle de [Produtos](#product-table)
 
+## 🚀 Deploy
+Você pode acessar o deploy da aplicação em: [https://rafael-compassmart.herokuapp.com/](https://rafael-compassmart.herokuapp.com/)
 
 ## 📗 Documentação Swagger
 Para acessar a documentão completa da API, basta acessar este [link](https://app.swaggerhub.com/apis/devrafamenegon/CompassMart/1.0.0)
@@ -122,9 +124,6 @@ Após instalar e configurar todo o projeto, você pode rodar os testes com o com
 # Inicia os testes unitários e de integração
 $ npm run test
 ```
-
-## Deploy
-Você pode acessar o deploy da aplicação em: [https://compassmart.herokuapp.com/](https://compassmart.herokuapp.com/)
 
 ## 🚪 Endpoints
 

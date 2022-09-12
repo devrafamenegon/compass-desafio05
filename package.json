@@ -1,5 +1,5 @@
 {
-  "name": "arquitetura-node-typescript",
+  "name": "rafael-compass-mart",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -58,8 +58,5 @@
     "multer": "^1.4.5-lts.1",
     "swagger-ui-express": "^4.5.0",
     "winston": "^3.8.1"
-  },
-  "engines": {
-    "node": "16.5.1"
   }
 }
