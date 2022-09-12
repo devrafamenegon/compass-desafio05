@@ -1,2 +1,5 @@
 /*.js
 coverage/*
+dist/*
+__tests__/*
+jest.config.ts
