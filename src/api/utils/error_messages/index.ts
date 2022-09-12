@@ -1,4 +1,5 @@
 export const ErrorMessages = {
   BAD_REQUEST: 'Invalid request body',
-  INTERNAL_SERVER: 'Unexpected internal server error'
+  INTERNAL_SERVER: 'Unexpected internal server error',
+  INVALID_METHOD: 'Invalid method'
 }
