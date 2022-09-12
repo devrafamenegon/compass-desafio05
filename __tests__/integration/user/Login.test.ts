@@ -24,7 +24,9 @@ describe('Feature: Login user', () => {
       })
 
       it('And body have user format', async () => {
-        expect(response.body).toHaveProperty('token')
+        expect(response.body).toEqual(expect.objectContaining({
+          token: expect.any(String)
+        }))
       })
       it('And header content type is application/json', async () => {
         expect(response.headers['content-type']).toEqual(expect.stringContaining('application/json'))
