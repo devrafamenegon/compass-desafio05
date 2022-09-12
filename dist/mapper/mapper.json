@@ -1,0 +1,31 @@
+{
+    "fields": [
+        {
+            "fieldProduct": "product.id",
+            "fieldMarket": "walmart.id",
+            "type": "text"
+        },
+        {
+            "fieldProduct": "product.department",
+            "fieldMarket": "walmart.product.category.path.name",
+            "type": "array"
+        },
+        {
+            "fieldProduct": "product.price",
+            "fieldMarket": "walmart.product.salesPrice",
+            "type": "number"
+        },
+        {
+            "fieldProduct": "product.price",
+            "fieldMarket": "walmart.product.listPrice",
+            "optional": ["currency", "en-US", "USD"],
+            "type": "text"
+        },
+        {
+            "fieldProduct": "product.bar_codes",
+            "fieldMarket": "walmart.product.codes",
+            "optional": ["break", 2],
+            "type": "array"
+        }
+    ]
+}

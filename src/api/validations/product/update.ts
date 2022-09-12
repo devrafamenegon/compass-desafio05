@@ -3,6 +3,7 @@ import BadRequestError from '../../errors/BadRequestError'
 import { Request, Response, NextFunction } from 'express'
 import Joi from 'joi'
 import formatJoiMessage from '../../utils/formatJoiMessage'
+import { ErrorMessages } from '../../utils/error_messages'
 
 export default async (req: Request, res: Response, next: NextFunction): Promise<Object | void> => {
   try {
@@ -28,12 +29,13 @@ export default async (req: Request, res: Response, next: NextFunction): Promise<
         bar_codes: Joi.string().optional().trim().length(13).pattern(/^[0-9]+$/)
       })
     } else {
-      throw new BadRequestError('Invalid method')
+      throw new BadRequestError(ErrorMessages.INVALID_METHOD, 'Only PUT and PATCH methods are allowed')
     }
 
     const { error } = await schema.validate(req.body, { abortEarly: false })
     if (error != null) throw error
     return next()
   } catch (error) {
-    return res.status(400).json(formatJoiMessage(error as Joi.ValidationError))  }
+    return next(new BadRequestError(ErrorMessages.BAD_REQUEST, formatJoiMessage(error as Joi.ValidationError) as string))
+  }
 }

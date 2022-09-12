@@ -3,29 +3,28 @@ import ProductSchema from '../schemas/ProductSchema'
 import { PaginateResult } from 'mongoose'
 import customLabels from '../utils/paginate/product'
 
+const limitDefault: number = Number(process.env.DEFAULT_LIMIT_PER_PAGE ?? 50)
+
 class ProductRepository {
   async create (payload: IProductCreate): Promise<IProductResponse> {
     return await ProductSchema.create(payload)
   }
 
   async findAll (query: IProductQuery, page: number): Promise<PaginateResult<IProductResponse>> {
-    const limitDefault: number = Number(process.env.DEFAULT_LIMIT_PER_PAGE ?? 50)
-    const result = await ProductSchema.paginate(query, { page, limit: limitDefault, customLabels })
-    return result
+    return await ProductSchema.paginate(query, { page, limit: limitDefault, customLabels })
   }
 
   async findOne (id: string): Promise<IProductResponse | null> {
-    const result = await ProductSchema.findById(id)
-    return result
+    return await ProductSchema.findById(id)
   }
 
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async findByBarcode (bar_codes: string): Promise<IProductResponse | null> {
-    return ProductSchema.findOne({ bar_codes: bar_codes })
+    return await ProductSchema.findOne({ bar_codes })
   }
 
   async findLowStock (page: number): Promise<PaginateResult<IProductResponse>> {
-    const limitDefault: number = Number(process.env.DEFAULT_LIMIT_PER_PAGE ?? 50)
-    const result = await ProductSchema.paginate(
+    return await ProductSchema.paginate(
       {
         stock_control_enabled: true,
         qtd_stock: { $lt: 100 }
@@ -37,18 +36,14 @@ class ProductRepository {
         customLabels
       }
     )
-
-    return result
   }
 
   async update (id: string, payload: IProductCreate): Promise<IProductResponse | null> {
-    const result = await ProductSchema.findByIdAndUpdate(id, payload, { new: true })
-    return result
+    return await ProductSchema.findByIdAndUpdate(id, payload, { new: true })
   }
 
   async delete (id: string): Promise<IProductResponse | null> {
-    const result = await ProductSchema.findByIdAndDelete(id)
-    return result
+    return await ProductSchema.findByIdAndDelete(id)
   }
 }
 
