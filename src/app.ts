@@ -6,7 +6,7 @@ import morganMiddleware from './config/logger'
 import swaggerUi from 'swagger-ui-express'
 import swaggerDocument from './static/swagger.json'
 
-Database.connect()
+void Database.connect()
 
 class App {
   public server: express.Application
