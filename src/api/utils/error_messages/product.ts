@@ -7,5 +7,5 @@ export const ProductErrorMessages = {
   INVALID_PRODUCT_ID: 'Invalid product id',
   INVALID_QUERY_PARAMS: 'Invalid query parameters',
   CSV_FILE_TOO_BIGGER: 'Invalid csv file',
-  NOT_CSV_FILE: 'File is not a csv',
+  NOT_CSV_FILE: 'File is not a csv'
 }

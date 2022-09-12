@@ -5,18 +5,18 @@ import BadRequestError from '../errors/BadRequestError'
 import isValidUuid from '../utils/isValidUuid'
 import { IMulterFile } from 'api/interfaces/IMulterFile'
 import createWithCsv from '../validations/product/createWithCsv'
-import InternalServer from '../errors/InternalServerError'
 import { ProductErrorMessages } from '../utils/error_messages/product'
 import NotFoundError from '../errors/NotFoundError'
 import mapper from '../../mapper/mapper.json'
 import { IMapper } from 'api/interfaces/IMapper'
+import InternalServerError from '../errors/InternalServerError'
 
 class ProductService {
   async create (payload: IProductCreate): Promise<IProductResponse> {
-    await this.checkIfBarcodesAlreadyExists(payload.bar_codes) 
-    
+    await this.checkIfBarcodesAlreadyExists(payload.bar_codes)
+
     const result = await ProductRepository.create(payload)
-    this.checkIfResultIsNotNull(result, ProductErrorMessages.PRODUCT_NOT_CREATED)
+    void this.checkIfResultIsNotNull(result, ProductErrorMessages.PRODUCT_NOT_CREATED)
     return result
   }
 
@@ -53,10 +53,10 @@ class ProductService {
     await this.checkIfProductInDatabase(id)
     payload.qtd_stock === 0 ? payload.stock_control_enabled = false : payload.stock_control_enabled = true
 
-    await this.checkIfBarcodesAlreadyExists(payload.bar_codes) 
-    
+    await this.checkIfBarcodesAlreadyExists(payload.bar_codes)
+
     const result = await ProductRepository.update(id, payload)
-    this.checkIfResultIsNotNull(result, ProductErrorMessages.PRODUCT_NOT_UPDATED)
+    void this.checkIfResultIsNotNull(result, ProductErrorMessages.PRODUCT_NOT_UPDATED)
     return result
   }
 
@@ -91,12 +91,12 @@ class ProductService {
 
     for await (const property of products) {
       const payload: IProductCreate = {
-        ...csvFormat.reduce((acc, cur, i) => ({ ...acc, [cur]: property[i] }), {})
-      } as IProductCreate
+        ...csvFormat.reduce((acc, cur, i) => ({ ...acc, [cur]: property[i] }), {}) as IProductCreate
+      }
 
       property.forEach((value, index) => {
         payload[csvFormat[index]] = value.replace(/"/g, '')
-        
+
         payload.price = Number(payload.price.toString().replace(',', '.'))
         payload.qtd_stock = Number(payload.qtd_stock)
       })
@@ -119,7 +119,7 @@ class ProductService {
     return customResult
   }
 
-  async findOneWithMapper (id: string) {
+  async findOneWithMapper (id: string): Promise<Object> {
     const result = await ProductRepository.findOne(id)
     if (result === null) throw new NotFoundError(ProductErrorMessages.PRODUCT_NOT_FOUND, `Product not found with this id: ${id}`)
 
@@ -127,42 +127,45 @@ class ProductService {
 
     const marketplaceObject = fields.map(field => {
       const { type, fieldProduct, fieldMarket, optional } = field
-      
+
       const productLocation = fieldProduct.replace('product.', '')
       const marketLocation = fieldMarket.split('.')
-      
+
       const marketObject = {}
-      
+
       marketLocation.reduce((auxObj: Object, marketIndex: string) => {
         const isLastIndex = marketLocation.indexOf(marketIndex) === marketLocation.length - 1
-        
-        if (isLastIndex) {
-          type === 'text' ? auxObj[marketIndex] = result[productLocation].toString()
-          : type === 'number' ? auxObj[marketIndex] = Number(result[productLocation])
-          : type === 'boolean' ? auxObj[marketIndex] = Boolean(result[productLocation])
-          : type === 'array' ? auxObj[marketIndex] = Array(result[productLocation]) 
-          : auxObj[marketIndex] = result[productLocation]
 
-          if (optional) {
+        if (isLastIndex) {
+          type === 'text'
+            ? auxObj[marketIndex] = result[productLocation].toString()
+            : type === 'number'
+              ? auxObj[marketIndex] = Number(result[productLocation])
+              : type === 'boolean'
+                ? auxObj[marketIndex] = Boolean(result[productLocation])
+                : type === 'array'
+                  ? auxObj[marketIndex] = Array(result[productLocation])
+                  : auxObj[marketIndex] = result[productLocation]
+
+          if (optional != null) {
             const option = Object.values(optional)
-            const [ title, locale, currency ] = option
+            const [title, locale, currency] = option
             const stringObj = auxObj[marketIndex].toString()
-            
-            if (title ==='break') {
+
+            if (title === 'break') {
               auxObj[marketIndex] = stringObj.match(/.{2}/g)
               auxObj[marketIndex].push(stringObj.charAt(stringObj.length - 1))
-            } else if (title ==='currency') {
-              auxObj[marketIndex] = Number(auxObj[marketIndex]).toLocaleString(locale, { style: 'currency', currency: currency })
+            } else if (title === 'currency') {
+              auxObj[marketIndex] = Number(auxObj[marketIndex]).toLocaleString(locale, { style: 'currency', currency })
             }
-            
+
             return auxObj[marketIndex]
           }
-        } else {
-          return auxObj[marketIndex] = {}
         }
-        
+        auxObj[marketIndex] = {}
+        return auxObj[marketIndex]
       }, marketObject)
-      
+
       return marketObject
     })
 
@@ -175,47 +178,43 @@ class ProductService {
     return mergedMarketObject
   }
 
-  private async checkIfBarcodesAlreadyExists (barCodes: string) {
+  private async checkIfBarcodesAlreadyExists (barCodes: string): Promise<void> {
     const product = await ProductRepository.findByBarcode(barCodes)
-    if (product !== null) 
-    throw new BadRequestError(ProductErrorMessages.BARCODES_ALREADY_EXIST, 'You can not create a product with barcodes that already exist')
+    if (product !== null) { throw new BadRequestError(ProductErrorMessages.BARCODES_ALREADY_EXIST, 'You can not create a product with barcodes that already exist') }
   }
 
-  private async checkIfIsValidUuid (id: string) {
+  private async checkIfIsValidUuid (id: string): Promise<void> {
     if (!isValidUuid(id)) throw new BadRequestError(ProductErrorMessages.INVALID_PRODUCT_ID, 'Id is not a valid uuid')
   }
 
-  private async checkIfProductInDatabase (id: string) {
+  private async checkIfProductInDatabase (id: string): Promise<void> {
     const product = await ProductRepository.findOne(id)
     if (product === null) throw new NotFoundError(ProductErrorMessages.PRODUCT_NOT_FOUND, `Product not found with this id: ${id}`)
   }
 
-  private checkIfResultIsNotNull (result: IProductResponse | null, message: string) {
-    if (result === null) throw new InternalServer(message)
+  private async checkIfResultIsNotNull (result: IProductResponse | null, message: string): Promise<void> {
+    if (result === null) throw new InternalServerError(message)
   }
 
   private isObject (item): boolean {
-    return (item && typeof item === 'object' && !Array.isArray(item))
+    return ((Boolean(item)) && typeof item === 'object' && !Array.isArray(item))
   }
 
-  private mergeObjLines (target: Object, ...sources: Array<Object>): Object {
-    if (!sources.length) return target
+  private mergeObjLines (target: Object, ...sources: Object[]): Object {
+    if (sources.length === 0) return target
     const source = sources.shift()
 
     if (this.isObject(target) && this.isObject(source)) {
-      
       for (const key in source) {
         if (this.isObject(source[key])) {
-          
-          if (!target[key]) {
-            Object.assign(target, {[key]: {}})
+          if (target[key] != null) {
+            Object.assign(target, { [key]: {} })
           }
           this.mergeObjLines(target[key], source[key])
         } else {
           Object.assign(target, { [key]: source[key] })
         }
       }
-      
     }
 
     return this.mergeObjLines(target, ...sources)

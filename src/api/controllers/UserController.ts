@@ -5,9 +5,9 @@ import UserService from '../services/UserService'
 class UserController {
   async login (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
     try {
-    const payload: IUserLogin = req.body
-    const token = await UserService.login(payload)
-    return res.status(200).json(token)
+      const payload: IUserLogin = req.body
+      const token = await UserService.login(payload)
+      return res.status(200).json(token)
     } catch (error) {
       next(error)
     }

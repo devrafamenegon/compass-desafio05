@@ -1,4 +1,4 @@
-import { CustomError } from "./CustomError"
+import { CustomError } from './CustomError'
 
 export default class NotFoundError extends CustomError {
   constructor (message: string, description: string) {
@@ -8,6 +8,5 @@ export default class NotFoundError extends CustomError {
       'We could not find the resource you requested. Please refer to the documentation for the list of resources.',
       404
     )
-    
   }
 }

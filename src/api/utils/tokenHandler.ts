@@ -1,14 +1,14 @@
-import { IUser } from '../interfaces/IUser'
 import jwt from 'jsonwebtoken'
 import config from '../../config/config'
+import { ICreateToken } from 'api/interfaces/IToken'
 
 const { secret, expiresIn } = config.auth
 
-export function createToken (user: IUser): string {
-  return jwt.sign (
+export function createToken (user: (ICreateToken)): string {
+  return jwt.sign(
     { content: user },
-    secret as string, 
-    { expiresIn: expiresIn }
+    secret as string,
+    { expiresIn }
   )
 }
 

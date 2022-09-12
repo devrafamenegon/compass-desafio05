@@ -18,8 +18,9 @@ class ProductRepository {
     return await ProductSchema.findById(id)
   }
 
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async findByBarcode (bar_codes: string): Promise<IProductResponse | null> {
-    return await ProductSchema.findOne({ bar_codes: bar_codes })
+    return await ProductSchema.findOne({ bar_codes })
   }
 
   async findLowStock (page: number): Promise<PaginateResult<IProductResponse>> {

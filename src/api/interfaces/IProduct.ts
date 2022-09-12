@@ -57,7 +57,7 @@ export interface IProductQuery {
 export interface IErrorsDetails {
   title: string
   bar_codes: string
-  error: string | Array<string>
+  error: string | string[]
 }
 
 export interface IProductCreateWithCsvResponse {

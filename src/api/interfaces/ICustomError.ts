@@ -1,8 +1,8 @@
 export interface ICustomError {
-  message: string;
-  description: string;
+  message: string
+  description: string
   http_response: {
-    message: string;
-    code: number;
+    message: string
+    code: number
   }
 }

@@ -12,6 +12,6 @@ export default async (req: Request, res: Response, next: NextFunction): Promise<
     if (error != null) throw error
     return next()
   } catch (error) {
-    return next(new BadRequestError(ErrorMessages.BAD_REQUEST, formatJoiMessage(error as Joi.ValidationError) as string ))
+    return next(new BadRequestError(ErrorMessages.BAD_REQUEST, formatJoiMessage(error as Joi.ValidationError) as string))
   }
 }

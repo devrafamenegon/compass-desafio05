@@ -1,4 +1,4 @@
-import { CustomError } from "./CustomError"
+import { CustomError } from './CustomError'
 
 export default class InternalServerError extends CustomError {
   constructor (message: string) {
@@ -8,6 +8,5 @@ export default class InternalServerError extends CustomError {
       'Unexpected internal server error.',
       500
     )
-    
   }
 }

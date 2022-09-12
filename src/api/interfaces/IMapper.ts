@@ -1,10 +1,10 @@
 export interface IMapper {
-  fields: Array<IMapperField>
+  fields: IMapperField[]
 }
 
 export interface IMapperField {
   type: string
   fieldProduct: string
   fieldMarket: string
-  optional?: Array<string>
+  optional?: string[]
 }

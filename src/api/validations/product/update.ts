@@ -29,13 +29,13 @@ export default async (req: Request, res: Response, next: NextFunction): Promise<
         bar_codes: Joi.string().optional().trim().length(13).pattern(/^[0-9]+$/)
       })
     } else {
-      throw new BadRequestError('Invalid method', 'Only PUT and PATCH methods are allowed')
+      throw new BadRequestError(ErrorMessages.INVALID_METHOD, 'Only PUT and PATCH methods are allowed')
     }
 
     const { error } = await schema.validate(req.body, { abortEarly: false })
     if (error != null) throw error
     return next()
   } catch (error) {
-    return next(new BadRequestError(ErrorMessages.BAD_REQUEST, formatJoiMessage(error as Joi.ValidationError) as string ))
+    return next(new BadRequestError(ErrorMessages.BAD_REQUEST, formatJoiMessage(error as Joi.ValidationError) as string))
   }
 }

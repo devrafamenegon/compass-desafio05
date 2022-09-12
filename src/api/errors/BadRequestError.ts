@@ -1,11 +1,11 @@
-import { CustomError } from "./CustomError"
+import { CustomError } from './CustomError'
 
 export default class BadRequestError extends CustomError {
   constructor (message: string, description: string) {
     super(
-      message, 
+      message,
       description,
-      'Invalid syntax for this request was provided.', 
+      'Invalid syntax for this request was provided.',
       400
     )
   }
