@@ -2,7 +2,6 @@ import { requestApp } from "../../setup"
 import { PRODUCT_ENDPOINT, TOKEN } from "../../utils/constants"
 import productFactory from "../../utils/factories/ProductFactory"
 import { checkErrorFormat } from "../../utils/formats/ErrorFormat"
-import { randomUUID } from 'crypto'
 
 describe('Feature: Delete product', () => {
   describe('Given the user is authenticated', () => {
@@ -10,7 +9,7 @@ describe('Feature: Delete product', () => {
       const product = productFactory()
       let response
 
-      it('Then 201 is returned', async () => {
+      it('Then 204 is returned', async () => {
         const { body } = await requestApp
           .post(PRODUCT_ENDPOINT)
           .set(TOKEN)
@@ -19,8 +18,7 @@ describe('Feature: Delete product', () => {
         response = await requestApp
           .delete(`${PRODUCT_ENDPOINT}/${body._id}`)
           .set(TOKEN)
-          .send(product)
-
+          
         expect(response.status).toBe(204)
       })
 
