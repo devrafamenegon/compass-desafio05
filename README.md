@@ -123,6 +123,9 @@ Após instalar e configurar todo o projeto, você pode rodar os testes com o com
 $ npm run test
 ```
 
+## Deploy
+Você pode acessar o deploy da aplicação em: [https://compassmart.herokuapp.com/](https://compassmart.herokuapp.com/)
+
 ## 🚪 Endpoints
 
 ### Product Endpoints

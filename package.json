@@ -9,7 +9,8 @@
     "prepare": "husky install",
     "test": "jest --verbose --coverage",
     "lint-fix": "eslint . --fix",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "build": "tsc"
   },
   "license": "ISC",
   "devDependencies": {

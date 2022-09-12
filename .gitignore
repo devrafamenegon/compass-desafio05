@@ -13,6 +13,3 @@ __test__/coverage/*
 
 # morgan logger path
 logs/
-
-# production
-dist
