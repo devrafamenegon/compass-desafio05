@@ -24,6 +24,18 @@ export const paginateProductsResponse = {
   ])
 }
 
+export const error_detail = {
+  title: expect.any(String),
+  bar_codes: expect.any(String),
+  error: expect.any(String) || expect.any(Array)
+}
+
+export const insertManyProductsResponse = expect.objectContaining({
+  success: expect.any(Number),
+  errors: expect.any(Number),
+})
+
+
 export const checkProductFormat = (body) => {
   expect(body).toEqual(productResponse)
 }
@@ -31,3 +43,8 @@ export const checkProductFormat = (body) => {
 export const checkPaginateProductsFormat = (body) => {
   expect(body).toEqual(expect.objectContaining(paginateProductsResponse))
 }
+
+export const checkInsertManyProductsFormat = (body) => {
+  expect(body).toEqual(insertManyProductsResponse)
+}
+
