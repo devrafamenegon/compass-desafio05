@@ -1,8 +1,10 @@
 import { IProductCreate } from '../../src/api/interfaces/IProduct'
-import { IUser } from '../../src/api/interfaces/IUser'
+import { ICreateToken } from '../../src/api/interfaces/IToken'
 import { createToken } from '../../src/api/utils/tokenHandler'
 
 export const BASE_URL = '/api/v1'
+
+export const PRODUCT_CSV_FILE = `${__dirname}/files/products.csv`
 
 export const PRODUCT_ENDPOINT = `${BASE_URL}/product`
 export const PRODUCT: IProductCreate = {
@@ -16,12 +18,18 @@ export const PRODUCT: IProductCreate = {
 }
 
 export const USER_ENDPOINT = `${BASE_URL}/user`
-export const USER: IUser = {
+
+export const USER = {
   email: 'rafael.menegon@gmail.com',
-  password: '123456',
+  password: '123456'
 }
 
-const valid_token: string = createToken(USER)
+const TOKEN_PAYLOAD: ICreateToken = {
+  _id: '97c291f3-b035-427c-a90f-d8ceded729e0',
+  email: 'rafael.menegon@gmail.com'
+}
+
+const valid_token: string = createToken(TOKEN_PAYLOAD)
 
 export const TOKEN = { authorization: `Bearer ${valid_token}` }
 
