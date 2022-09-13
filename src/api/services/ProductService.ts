@@ -1,3 +1,6 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable no-return-assign */
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { PaginateResult } from 'mongoose'
 import { IProductResponse, IProductCreate, IProductQuery, IProductCreateWithCsvResponse } from '../interfaces/IProduct'
 import ProductRepository from '../repositories/ProductRepository'
@@ -147,7 +150,7 @@ class ProductService {
                   ? auxObj[marketIndex] = Array(result[productLocation])
                   : auxObj[marketIndex] = result[productLocation]
 
-          if (optional != null) {
+          if (optional) {
             const option = Object.values(optional)
             const [title, locale, currency] = option
             const stringObj = auxObj[marketIndex].toString()
@@ -161,9 +164,9 @@ class ProductService {
 
             return auxObj[marketIndex]
           }
+        } else {
+          return auxObj[marketIndex] = {}
         }
-        auxObj[marketIndex] = {}
-        return auxObj[marketIndex]
       }, marketObject)
 
       return marketObject
@@ -207,7 +210,7 @@ class ProductService {
     if (this.isObject(target) && this.isObject(source)) {
       for (const key in source) {
         if (this.isObject(source[key])) {
-          if (target[key] != null) {
+          if (!target[key]) {
             Object.assign(target, { [key]: {} })
           }
           this.mergeObjLines(target[key], source[key])
