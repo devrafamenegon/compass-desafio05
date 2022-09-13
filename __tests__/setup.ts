@@ -2,6 +2,8 @@ import Database from '../src/infra/database/mongo/index'
 import request from 'supertest'
 import app from '../src/app'
 
+jest.setTimeout(100000)
+
 global.beforeAll(async () => {
   await Database.connect()
   await Database.clear()
