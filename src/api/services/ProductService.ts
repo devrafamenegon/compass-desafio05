@@ -122,9 +122,12 @@ class ProductService {
     return customResult
   }
 
-  async findOneWithMapper (id: string): Promise<Object> {
+  async findOneWithMapper (id: string): Promise<Object | null> {
+    await this.checkIfIsValidUuid(id)
+    await this.checkIfProductInDatabase(id)
+
     const result = await ProductRepository.findOne(id)
-    if (result === null) throw new NotFoundError(ProductErrorMessages.PRODUCT_NOT_FOUND, `Product not found with this id: ${id}`)
+    void this.checkIfResultIsNotNull(result, ProductErrorMessages.PRODUCT_NOT_FOUND)
 
     const { fields } = mapper as IMapper
 
@@ -141,14 +144,14 @@ class ProductService {
 
         if (isLastIndex) {
           type === 'text'
-            ? auxObj[marketIndex] = result[productLocation].toString()
+            ? auxObj[marketIndex] = result?.[productLocation].toString()
             : type === 'number'
-              ? auxObj[marketIndex] = Number(result[productLocation])
+              ? auxObj[marketIndex] = Number(result?.[productLocation])
               : type === 'boolean'
-                ? auxObj[marketIndex] = Boolean(result[productLocation])
+                ? auxObj[marketIndex] = Boolean(result?.[productLocation])
                 : type === 'array'
-                  ? auxObj[marketIndex] = Array(result[productLocation])
-                  : auxObj[marketIndex] = result[productLocation]
+                  ? auxObj[marketIndex] = Array(result?.[productLocation])
+                  : auxObj[marketIndex] = result?.[productLocation]
 
           if (optional) {
             const option = Object.values(optional)
