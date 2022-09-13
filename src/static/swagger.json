@@ -471,9 +471,6 @@
       }
     },
     "/user": {
-      "security": {
-        "bearerAuth": []
-      },
       "post": {
         "tags": [
           "User"
@@ -524,10 +521,7 @@
         }
       }
     },
-    "/user": {
-      "security": {
-        "bearerAuth": []
-      },
+    "/user/login": {
       "post": {
         "tags": [
           "User"
