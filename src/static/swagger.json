@@ -18,15 +18,23 @@
     {
       "name": "Product",
       "description": "Ações possíveis para os produtos"
+    },
+    {
+      "name": "User",
+      "description": "Ações possíveis para os usuários"
     }
   ],
   "servers": [
     {
-      "url": "/api/v1"
+      "url": "https://rafael-compassmart.herokuapp.com/api/v1",
+      "description": "Servidor de produção"
     }
   ],
   "paths": {
     "/product": {
+      "security": {
+        "bearerAuth": []
+      },
       "post": {
         "tags": [
           "Product"
@@ -59,7 +67,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/error"
+                  "$ref": "#/components/schemas/bad_request_error"
                 }
               }
             }
@@ -69,7 +77,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/error"
+                  "$ref": "#/components/schemas/internal_server_error"
                 }
               }
             }
@@ -121,7 +129,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/error"
+                  "$ref": "#/components/schemas/bad_request_error"
                 }
               }
             }
@@ -131,7 +139,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/error"
+                  "$ref": "#/components/schemas/internal_server_error"
                 }
               }
             }
@@ -140,6 +148,9 @@
       }
     },
     "/product/{id}": {
+      "security": {
+        "bearerAuth": []
+      },
       "parameters": [
         {
           "name": "id",
@@ -173,7 +184,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/error"
+                  "$ref": "#/components/schemas/bad_request_error"
                 }
               }
             }
@@ -193,7 +204,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/error"
+                  "$ref": "#/components/schemas/internal_server_error"
                 }
               }
             }
@@ -232,7 +243,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/error"
+                  "$ref": "#/components/schemas/bad_request_error"
                 }
               }
             }
@@ -262,7 +273,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/error"
+                  "$ref": "#/components/schemas/internal_server_error"
                 }
               }
             }
@@ -301,7 +312,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/error"
+                  "$ref": "#/components/schemas/bad_request_error"
                 }
               }
             }
@@ -321,7 +332,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/error"
+                  "$ref": "#/components/schemas/internal_server_error"
                 }
               }
             }
@@ -343,7 +354,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/error"
+                  "$ref": "#/components/schemas/bad_request_error"
                 }
               }
             }
@@ -363,7 +374,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/error"
+                  "$ref": "#/components/schemas/internal_server_error"
                 }
               }
             }
@@ -372,6 +383,9 @@
       }
     },
     "/product/csv": {
+      "security": {
+        "bearerAuth": []
+      },
       "post": {
         "tags": [
           "Product"
@@ -404,7 +418,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/error"
+                  "$ref": "#/components/schemas/bad_request_error"
                 }
               }
             }
@@ -414,7 +428,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/error"
+                  "$ref": "#/components/schemas/internal_server_error"
                 }
               }
             }
@@ -423,6 +437,9 @@
       }
     },
     "/product/low_stock": {
+      "security": {
+        "bearerAuth": []
+      },
       "get": {
         "tags": [
           "Product"
@@ -445,7 +462,113 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/error"
+                  "$ref": "#/components/schemas/internal_server_error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user": {
+      "security": {
+        "bearerAuth": []
+      },
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Criação de usuários",
+        "description": "A inclusão retorna os dados cadastrados junto ao uuid do usuário",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/user-request"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Inclusão realizada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/user-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/bad_request_error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro ao realizar a solicitação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/internal_server_error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user": {
+      "security": {
+        "bearerAuth": []
+      },
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Login de usuários",
+        "description": "A inclusão retorna um token para ser utilizado nas demais requisições",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/user-request"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Inclusão realizada com sucesso",
+            "content": {
+              "application/json": {
+                
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/bad_request_error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro ao realizar a solicitação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/internal_server_error"
                 }
               }
             }
@@ -455,6 +578,13 @@
     }
   },
   "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
     "schemas": {
       "product-request": {
         "type": "object",
@@ -507,14 +637,11 @@
           "bar_codes": {
             "type": "string"
           },
-          "createdAt": {
+          "created_at": {
             "type": "string"
           },
-          "updatedAt": {
+          "updated_at": {
             "type": "string"
-          },
-          "_v": {
-            "type": "number"
           }
         }
       },
@@ -545,23 +672,153 @@
           }
         }
       },
+      "user-request": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "user-response": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
       "error": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "name": {
-              "type": "string"
-            },
-            "details": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "http_response": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string"
+              },
+              "code": {
+                "type": "number",
+                "format": "int64"
+              }
+            }
+          }
+        }
+      },
+      "bad_request_error": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "http_response": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "default": "Invalid syntax for this request was provided."
+              },
+              "code": {
+                "type": "number",
+                "format": "int64",
+                "default": 400
+              }
+            }
+          }
+        }
+      },
+      "not_found_error": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "http_response": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "default": "We could not find the resource you requested. Please refer to the documentation for the list of resources."
+              },
+              "code": {
+                "type": "number",
+                "format": "int64",
+                "default": 404
+              }
+            }
+          }
+        }
+      },
+      "unauthorized_error": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "http_response": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "default": "You are unauthorized to access the requested resource. Please log in."
+              },
+              "code": {
+                "type": "number",
+                "format": "int64",
+                "default": 401
+              }
+            }
+          }
+        }
+      },
+      "internal_server_error": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "default": "Some internal error occurred"
+          },
+          "http_response": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "default": "Unexpected internal server error."
+              },
+              "code": {
+                "type": "number",
+                "format": "int64",
+                "default": 500
               }
             }
           }
