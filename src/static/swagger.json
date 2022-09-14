@@ -24,18 +24,24 @@
       "description": "Ações possíveis para os usuários"
     }
   ],
-  "servers": [
+  "servers": [ 
     {
-      "url": "https://rafael-compassmart.herokuapp.com/api/v1",
-      "description": "Servidor de produção"
+      "url" : "http://localhost:3000/api/v1",
+      "description" : "Development"
+    }, 
+    {
+      "url" : "https://api-compassmart.herokuapp.com/api/v1",
+      "description" : "Production"
     }
   ],
   "paths": {
     "/product": {
-      "security": {
-        "bearerAuth": []
-      },
       "post": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "tags": [
           "Product"
         ],
@@ -85,6 +91,11 @@
         }
       },
       "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "tags": [
           "Product"
         ],
@@ -148,9 +159,6 @@
       }
     },
     "/product/{id}": {
-      "security": {
-        "bearerAuth": []
-      },
       "parameters": [
         {
           "name": "id",
@@ -163,6 +171,11 @@
         }
       ],
       "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "tags": [
           "Product"
         ],
@@ -212,6 +225,11 @@
         }
       },
       "put": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "tags": [
           "Product"
         ],
@@ -281,6 +299,11 @@
         }
       },
       "patch": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "tags": [
           "Product"
         ],
@@ -340,6 +363,11 @@
         }
       },
       "delete": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "tags": [
           "Product"
         ],
@@ -383,10 +411,12 @@
       }
     },
     "/product/csv": {
-      "security": {
-        "bearerAuth": []
-      },
       "post": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "tags": [
           "Product"
         ],
@@ -437,10 +467,12 @@
       }
     },
     "/product/low_stock": {
-      "security": {
-        "bearerAuth": []
-      },
       "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "tags": [
           "Product"
         ],
@@ -542,9 +574,7 @@
           "200": {
             "description": "Inclusão realizada com sucesso",
             "content": {
-              "application/json": {
-                
-              }
+              "application/json": {}
             }
           },
           "400": {
@@ -581,6 +611,7 @@
     },
     "schemas": {
       "product-request": {
+        "required" : [ "title", "description", "department", "brand", "price", "qtd_stock", "bar_codes" ],
         "type": "object",
         "properties": {
           "title": {
@@ -667,6 +698,7 @@
         }
       },
       "user-request": {
+        "required" : [ "email", "password" ],
         "type": "object",
         "properties": {
           "email": {
