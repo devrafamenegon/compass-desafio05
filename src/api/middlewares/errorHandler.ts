@@ -1,10 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
 import { CustomError } from '../errors/CustomError'
-import Logger from '../utils/logger'
 
 export default (error: CustomError, req: Request, res: Response, next: NextFunction): Response => {
   let customError = error
-  Logger.error(error)
 
   if (error instanceof CustomError) {
     customError = error
