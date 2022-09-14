@@ -9,6 +9,10 @@ global.beforeAll(async () => {
   await Database.clear()
 })
 
+global.afterEach(async () => {
+  await Database.clear()
+})
+
 global.afterAll(async () => {
   await Database.disconnect()
 })
