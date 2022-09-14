@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/server.js",
-    "dev": "nodemon -r dotenv/config ./src/server.ts --ignore __tests__",
+    "start": "set NODE_ENV=production&&node dist/server.js",
+    "dev": "set NODE_ENV=development&&nodemon -r dotenv/config ./src/server.ts --ignore __tests__",
     "prepare": "husky install",
-    "test": "jest --verbose --coverage",
+    "test": "set NODE_ENV=test&&jest --verbose --coverage --runInBand",
     "lint-fix": "eslint . --fix",
     "lint": "eslint .",
     "build": "tsc"
