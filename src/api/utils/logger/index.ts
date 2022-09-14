@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-import winston from 'winston'
+import { format, createLogger, transports } from 'winston'
 
 const levels = {
   error: 0,
@@ -15,38 +15,29 @@ const level = (): string => {
   return isDevelopment ? 'debug' : 'warn'
 }
 
-const colors = {
-  error: 'red',
-  warn: 'yellow',
-  info: 'green',
-  http: 'magenta',
-  debug: 'white'
-}
-
-winston.addColors(colors)
-
-const format = winston.format.combine(
-  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-  winston.format.colorize({ all: true }),
-  winston.format.printf(
+const customFormat = format.combine(
+  format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+  format.printf(
     (info) => `${info.timestamp} ${info.level}: ${info.message}`
   )
 )
 
-const transports = [
-  new winston.transports.Console(),
-  new winston.transports.File({
+const customTransports = [
+  new transports.Console(),
+  new transports.File({
     filename: 'logs/error.log',
     level: 'error'
   }),
-  new winston.transports.File({ filename: 'logs/all.log' })
+  new transports.File({
+    filename: 'logs/all.log'
+  })
 ]
 
-const Logger = winston.createLogger({
+const Logger = createLogger({
   level: level(),
   levels,
-  format,
-  transports
+  format: customFormat,
+  transports: customTransports
 })
 
 export default Logger
