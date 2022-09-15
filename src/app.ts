@@ -2,7 +2,7 @@ import express from 'express'
 import routes from './routes/index.router'
 import Database from './infra/database/mongo/index'
 import handleError from './api/middlewares/errorHandler'
-import morganMiddleware from './config/logger'
+import morganMiddleware from './config/morgan'
 import swaggerUi from 'swagger-ui-express'
 import swaggerDocument from './static/swagger.json'
 
