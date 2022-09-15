@@ -24,14 +24,14 @@
       "description": "Ações possíveis para os usuários"
     }
   ],
-  "servers": [ 
+  "servers": [
     {
-      "url" : "http://localhost:3000/api/v1",
-      "description" : "Development"
-    }, 
+      "url": "http://localhost:3000/api/v1",
+      "description": "Development"
+    },
     {
-      "url" : "https://api-compassmart.herokuapp.com/api/v1",
-      "description" : "Production"
+      "url": "https://api-compassmart.herokuapp.com/api/v1",
+      "description": "Production"
     }
   ],
   "paths": {
@@ -166,7 +166,8 @@
           "description": "id do produto",
           "required": true,
           "schema": {
-            "type": "string"
+            "type": "string",
+            "example": "6d05402b-6c0d-4163-b5de-43630ab069f9"
           }
         }
       ],
@@ -207,7 +208,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/error"
+                  "$ref": "#/components/schemas/not_found_error"
                 }
               }
             }
@@ -239,7 +240,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/product-request"
+                "$ref": "#/components/schemas/product-put-request"
               }
             }
           },
@@ -271,7 +272,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/error"
+                  "$ref": "#/components/schemas/unauthorized_error"
                 }
               }
             }
@@ -281,7 +282,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/error"
+                  "$ref": "#/components/schemas/not_found_error"
                 }
               }
             }
@@ -313,7 +314,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/product-request"
+                "$ref": "#/components/schemas/product-patch-request"
               }
             }
           },
@@ -345,7 +346,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/error"
+                  "$ref": "#/components/schemas/not_found_error"
                 }
               }
             }
@@ -392,7 +393,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/error"
+                  "$ref": "#/components/schemas/not_found_error"
                 }
               }
             }
@@ -424,21 +425,22 @@
         "description": "A inclusão retorna os dados cadastrados junto ao uuid do produto",
         "requestBody": {
           "content": {
-            "application/json": {
+            "csv": {
               "schema": {
-                "$ref": "#/components/schemas/product-request"
+                "type": "string",
+                "format": "binary"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "Inclusão realizada com sucesso",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/product-response"
+                  "$ref": "#/components/schemas/product-response-csv"
                 }
               }
             }
@@ -485,6 +487,67 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/product-response-paginate"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro ao realizar a solicitação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/internal_server_error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/marketplace/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "id do produto",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "6d05402b-6c0d-4163-b5de-43630ab069f9"
+          }
+        }
+      ],
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": [
+          "Product"
+        ],
+        "summary": "Consulta de produto usando um mapeador",
+        "description": "A consulta retorna os dados de um produto em um formato específicado na api",
+        "responses": {
+          "200": {
+            "description": "Consulta realizada com sucesso"
+          },
+          "400": {
+            "description": "Erro de validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/bad_request_error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Produto não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/not_found_error"
                 }
               }
             }
@@ -574,7 +637,16 @@
           "200": {
             "description": "Inclusão realizada com sucesso",
             "content": {
-              "application/json": {}
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
             }
           },
           "400": {
@@ -583,6 +655,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/bad_request_error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Produto não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/not_found_error"
                 }
               }
             }
@@ -611,28 +693,117 @@
     },
     "schemas": {
       "product-request": {
-        "required" : [ "title", "description", "department", "brand", "price", "qtd_stock", "bar_codes" ],
+        "required": [
+          "title",
+          "description",
+          "department",
+          "brand",
+          "price",
+          "qtd_stock",
+          "bar_codes"
+        ],
         "type": "object",
         "properties": {
           "title": {
-            "type": "string"
+            "type": "string",
+            "example": "Batata Palito"
           },
           "description": {
-            "type": "string"
+            "type": "string",
+            "example": "Batata Palito tradicional 9x9mm congelada pacote 2,5kg - McCain"
           },
           "department": {
-            "type": "string"
+            "type": "string",
+            "example": "Congelados"
+          },
+          "brand": {
+            "type": "string",
+            "example": "McCain"
           },
           "price": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "example": 29.54
           },
           "qtd_stock": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "example": 2856
           },
           "bar_codes": {
-            "type": "string"
+            "type": "string",
+            "example": 6539055340301
+          }
+        }
+      },
+      "product-put-request": {
+        "required": [
+          "title",
+          "description",
+          "department",
+          "brand",
+          "price",
+          "qtd_stock",
+          "bar_codes"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Leite Condensado"
+          },
+          "description": {
+            "type": "string",
+            "example": "Leite Condensado Semidesnatado tetra pak 395g - Piracanjuba"
+          },
+          "department": {
+            "type": "string",
+            "example": "Ofertas"
+          },
+          "brand": {
+            "type": "string",
+            "example": "Piracanjuba"
+          },
+          "price": {
+            "type": "number",
+            "format": "double",
+            "example": 6.44
+          },
+          "qtd_stock": {
+            "type": "integer",
+            "format": "int64",
+            "example": 966
+          }
+        }
+      },
+      "product-patch-request": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Leite Condensado"
+          },
+          "description": {
+            "type": "string",
+            "example": "Leite Condensado Semidesnatado tetra pak 395g - Piracanjuba"
+          },
+          "department": {
+            "type": "string",
+            "example": "Ofertas"
+          },
+          "brand": {
+            "type": "string",
+            "example": "Piracanjuba"
+          },
+          "price": {
+            "type": "number",
+            "format": "double",
+            "example": 6.44
+          },
+          "qtd_stock": {
+            "type": "integer",
+            "format": "int64",
+            "example": 966
           }
         }
       },
@@ -640,33 +811,46 @@
         "type": "object",
         "properties": {
           "_id": {
-            "type": "string"
+            "type": "string",
+            "example": "3df6a9bb-0038-4ed3-b9cb-da0a65eb0e7e"
           },
           "title": {
-            "type": "string"
+            "type": "string",
+            "example": "Batata Palito"
           },
           "description": {
-            "type": "string"
+            "type": "string",
+            "example": "Batata Palito tradicional 9x9mm congelada pacote 2,5kg - McCain"
           },
           "department": {
-            "type": "string"
+            "type": "string",
+            "example": "Congelados"
+          },
+          "brand": {
+            "type": "string",
+            "example": "McCain"
           },
           "price": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "example": 29.54
           },
           "qtd_stock": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "example": 2856
           },
           "bar_codes": {
-            "type": "string"
+            "type": "string",
+            "example": "6539055340301"
           },
           "created_at": {
-            "type": "string"
+            "type": "string",
+            "example": "2022-09-14T17:10:39.102Z"
           },
           "updated_at": {
-            "type": "string"
+            "type": "string",
+            "example": "2022-09-15T15:26:39.550Z"
           }
         }
       },
@@ -681,31 +865,92 @@
           },
           "total": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "example": 120
           },
           "limit": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "example": 50
           },
-          "page": {
+          "offset": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "example": 1
           },
-          "totalPages": {
+          "offsets": {
             "type": "number",
-            "format": "int64"
+            "format": "int64",
+            "example": 3
+          }
+        }
+      },
+      "product-response-csv": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "integer",
+            "format": "int64",
+            "example": 153
+          },
+          "errors": {
+            "type": "integer",
+            "format": "int64",
+            "example": 7
+          },
+          "errors_details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/errors_details_format"
+            }
+          }
+        }
+      },
+      "errors_details_format": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Detergente Líquido"
+          },
+          "bar_codes": {
+            "type": "string",
+            "example": "58791877369173"
+          },
+          "error": {
+            "oneOf": [
+              {
+                "type": "string",
+                "example": "bar_codes length must be 13 characters long"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": [
+                    "bar_codes length must be 13 characters long",
+                    "price must be greater than or equal to 0.01"
+                  ]
+                }
+              }
+            ]
           }
         }
       },
       "user-request": {
-        "required" : [ "email", "password" ],
+        "required": [
+          "email",
+          "password"
+        ],
         "type": "object",
         "properties": {
           "email": {
-            "type": "string"
+            "type": "string",
+            "example": "rafael.menegon@gmail.com"
           },
           "password": {
-            "type": "string"
+            "type": "string",
+            "example": "8A713VTo*gfDW"
           }
         }
       },
@@ -713,39 +958,20 @@
         "type": "object",
         "properties": {
           "_id": {
-            "type": "string"
+            "type": "string",
+            "example": "6de013af-2330-4dee-9faa-619cbfe29219"
           },
           "email": {
-            "type": "string"
+            "type": "string",
+            "example": "rafael.menegon@gmail.com"
           },
           "created_at": {
-            "type": "string"
+            "type": "string",
+            "example": "2022-09-15T15:08:11.698Z"
           },
           "updated_at": {
-            "type": "string"
-          }
-        }
-      },
-      "error": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "http_response": {
-            "type": "object",
-            "properties": {
-              "message": {
-                "type": "string"
-              },
-              "code": {
-                "type": "number",
-                "format": "int64"
-              }
-            }
+            "type": "string",
+            "example": "2022-10-15T15:10:12.698Z"
           }
         }
       },
