@@ -1,19 +1,20 @@
+import Logger from '../utils/logger'
 import { Request, Response, NextFunction } from 'express'
 import { CustomError } from '../errors/CustomError'
+import InternalServerError from '../errors/InternalServerError'
 
-export default (error: CustomError, req: Request, res: Response, next: NextFunction): Response => {
-  let customError = error
+export default (error: CustomError | Error, req: Request, res: Response, next: NextFunction): Response => {
+  let customError
 
   if (error instanceof CustomError) {
     customError = error
-  } else {
-    customError = new CustomError(
-      'Internal Server Error',
-      'Something went wrong',
-      'Internal Server Error',
-      500
-    )
+  } else if (error instanceof Error) {
+    customError = new InternalServerError(error.message)
   }
+
+  customError.http_code === 500
+    ? Logger.error(customError.stack)
+    : Logger.error(customError)
 
   return res.status(customError.http_code).json(
     {
