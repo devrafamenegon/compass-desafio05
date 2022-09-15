@@ -6,8 +6,8 @@
   "scripts": {
     "start": "set NODE_ENV=production&&node dist/server.js",
     "dev": "set NODE_ENV=development&&nodemon -r dotenv/config ./src/server.ts --ignore __tests__",
-    "prepare": "husky install",
     "test": "set NODE_ENV=test&&jest --verbose --coverage --runInBand",
+    "prepare": "husky install",
     "lint-fix": "eslint . --fix",
     "lint": "eslint .",
     "build": "tsc"
