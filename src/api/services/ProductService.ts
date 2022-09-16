@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-type-assertions */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-return-assign */
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
@@ -105,16 +106,28 @@ class ProductService {
       })
 
       const payloadValidate = await createWithCsv(payload)
+      const productExists = await ProductRepository.findByBarcode(payload.bar_codes)
 
       if (payloadValidate !== null) {
-        customResult.errors += 1
+        const validatorMessages = payloadValidate as string[]
+        if (productExists) validatorMessages.push(ProductErrorMessages.BARCODES_ALREADY_EXIST)
+        customResult.errors++
         customResult.errors_details.push({
           title: payload.title,
           bar_codes: payload.bar_codes,
-          error: payloadValidate.length > 1 ? payloadValidate : payloadValidate.toString()
+          error: validatorMessages.length > 1
+            ? validatorMessages
+            : validatorMessages.toString()
+        })
+      } else if (productExists) {
+        customResult.errors++
+        customResult.errors_details.push({
+          title: payload.title,
+          bar_codes: payload.bar_codes,
+          error: ProductErrorMessages.BARCODES_ALREADY_EXIST
         })
       } else {
-        customResult.success += 1
+        customResult.success++
         await this.create(payload)
       }
     }
