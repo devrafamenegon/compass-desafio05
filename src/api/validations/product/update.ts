@@ -15,8 +15,7 @@ export default async (req: Request, res: Response, next: NextFunction): Promise<
         department: Joi.string().required().trim(),
         brand: Joi.string().required().trim(),
         price: Joi.number().required().min(0.01).max(1000),
-        qtd_stock: Joi.number().required().min(0).max(100000),
-        bar_codes: Joi.string().required().trim().length(13).pattern(/^[0-9]+$/)
+        qtd_stock: Joi.number().required().min(0).max(100000)
       })
     } else if (req.method === 'PATCH') {
       schema = Joi.object({
@@ -25,8 +24,7 @@ export default async (req: Request, res: Response, next: NextFunction): Promise<
         department: Joi.string().optional().trim(),
         brand: Joi.string().optional().trim(),
         price: Joi.number().optional().min(0.01).max(1000),
-        qtd_stock: Joi.number().optional().min(0).max(100000),
-        bar_codes: Joi.string().optional().trim().length(13).pattern(/^[0-9]+$/)
+        qtd_stock: Joi.number().optional().min(0).max(100000)
       })
     } else {
       throw new BadRequestError(ErrorMessages.INVALID_METHOD, 'Only PUT and PATCH methods are allowed')
