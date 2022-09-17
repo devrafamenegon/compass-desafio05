@@ -283,6 +283,26 @@ describe('Feature: Create product', () => {
           expect(response.headers['content-type']).toEqual(expect.stringContaining('application/json'))
         })
       })
+      describe('And all is missing', () => {
+        const product = {}
+        let response
+  
+        it('Then 400 is returned', async () => {
+          response = await requestApp
+            .post(PRODUCT_ENDPOINT)
+            .set(TOKEN)
+            .send(product)
+  
+          expect(response.status).toBe(400)
+        })
+  
+        it('And body have error format', async () => {
+          checkErrorFormat(response.body)
+        })
+        it('And header content type is application/json', async () => {
+          expect(response.headers['content-type']).toEqual(expect.stringContaining('application/json'))
+        })
+      })
     })
   })
 })
