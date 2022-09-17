@@ -12,13 +12,13 @@ Desafio final do **Programa de Bolsas de NodeJS da [Compass.uol](https://compass
 * ### [Schemas](#-schemas)
 
 ## 📖 Solicitação do cliente
-A compasso entrou em um novo ramo de mercado, a CompassMart a qual é uma loja de departamento, onde seu foco é a comercialização de alimentos. Para essa API vai ser necessário desenvolver uma API em NodeJS que realize o controle de [Produtos](#product-table)
+A compasso entrou em um novo ramo de mercado, a CompassMart a qual é uma loja de departamento, onde seu foco é a comercialização de alimentos. Para essa API vai ser necessário desenvolver uma API em NodeJS que realize o controle de [Produtos](#product-table) e [Usuários](#user-table)
 
 ## 🚀 Deploy
-Você pode acessar o deploy da aplicação em: [https://rafael-compassmart.herokuapp.com/](https://rafael-compassmart.herokuapp.com/)
+Você pode acessar o deploy da aplicação em: [https://rafael-compassmart.herokuapp.com/](https://api-compassmart.herokuapp.com/api/v1)
 
 ## 📗 Documentação Swagger
-Para acessar a documentão completa da API, basta acessar este [link](https://app.swaggerhub.com/apis/devrafamenegon/CompassMart/1.0.0)
+Para acessar a documentão completa da API, basta acessar este [link](https://api-compassmart.herokuapp.com/api/v1/docs)
 
 ## 🧰 Tecnologias
 
@@ -138,6 +138,12 @@ $ npm run test
 |  `/product/:id`       |    PATCH     |  Updates a part of a product by its ID            |    
 |  `/product/:id`       |    PUT       |  Updates an entire product by its ID              |
 |  `/product/:id`       |    DELETE    |  Deletes the product by its ID                    |
+
+### User Endpoints
+|       Route           |    Method   |    Description                     |                                                                    
+|   ---------------     | :----------: |  ----------------------------------------------   |                                                                           
+|  `/user`           |    POST      |  Register a user                                | 
+|  `/user/login`     |    POST      |  Login a user and return a JWT token          |    
    
 ## 🧱 Schemas
 
@@ -153,6 +159,15 @@ $ npm run test
 | `qtd_stock`             | Number    | true     | false  |
 | `stock_control_enabled` | Boolean   | true     | false  |
 | `bar_codes`             | String    | true     | true   |
+| `createdAt`             | Date      | true     | false  |
+| `updatedAt`             | Date      | true     | false  |
+
+### User Table
+|        FieldName        |    Type   | Required | Unique |
+|-------------------------|:---------:|:--------:|:------:|
+| `_id`                   | Uuid      | true     | true   |
+| `email`                 | String    | true     | true   |
+| `password`              | String    | true     | false  |
 | `createdAt`             | Date      | true     | false  |
 | `updatedAt`             | Date      | true     | false  |
 
