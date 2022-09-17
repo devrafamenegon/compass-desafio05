@@ -13,6 +13,7 @@ export const createProductRules = Joi.object({
   price: Joi.number().required().min(0.01).max(1000),
   qtd_stock: Joi.number().required().min(1).max(100000),
   bar_codes: Joi.string().required().trim().length(13)
+    .pattern(/^[0-9]+$/).message('bar_codes must be a numeric string')
 })
 
 export default async (req: Request, res: Response, next: NextFunction): Promise<Object | void> => {

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-dynamic-delete */
+/* eslint-disable @typescript-eslint/consistent-type-assertions */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-return-assign */
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
@@ -92,6 +94,8 @@ class ProductService {
       return line.replace(/\r/g, '').split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
     })
 
+    const productList: IProductCreate[] = []
+
     for await (const property of products) {
       const payload: IProductCreate = {
         ...csvFormat.reduce((acc, cur, i) => ({ ...acc, [cur]: property[i] }), {}) as IProductCreate
@@ -105,17 +109,55 @@ class ProductService {
       })
 
       const payloadValidate = await createWithCsv(payload)
+      const productExists = await ProductRepository.findByBarcode(payload.bar_codes)
 
       if (payloadValidate !== null) {
-        customResult.errors += 1
+        const validatorMessages = payloadValidate as string[]
+        if (productExists) validatorMessages.push(ProductErrorMessages.BARCODES_ALREADY_EXIST)
+        customResult.errors++
         customResult.errors_details.push({
           title: payload.title,
           bar_codes: payload.bar_codes,
-          error: payloadValidate.length > 1 ? payloadValidate : payloadValidate.toString()
+          error: validatorMessages.length > 1
+            ? validatorMessages
+            : validatorMessages.toString()
+        })
+      } else if (productExists) {
+        customResult.errors++
+        customResult.errors_details.push({
+          title: payload.title,
+          bar_codes: payload.bar_codes,
+          error: ProductErrorMessages.BARCODES_ALREADY_EXIST
         })
       } else {
-        customResult.success += 1
-        await this.create(payload)
+        customResult.success++
+        productList.push(payload)
+      }
+    }
+
+    const allBarcodes: string[] = []
+
+    if (productList.length > 0) {
+      if (productList.length > 100) {
+        const chunks = this.chunkArray(productList, 100)
+        for await (const chunk of chunks) {
+          for await (const product of chunk) {
+            if (allBarcodes.includes(product.bar_codes)) {
+              customResult.errors++
+              customResult.errors_details.push({
+                title: product.title,
+                bar_codes: product.bar_codes,
+                error: ProductErrorMessages.BARCODES_ALREADY_EXIST
+              })
+
+              chunk.splice(chunk.indexOf(product), 1)
+            } else {
+              allBarcodes.push(product.bar_codes)
+            }
+          }
+          const result = await ProductRepository.createMany(chunk)
+          void this.checkIfResultIsNotNull(result, ProductErrorMessages.PRODUCT_NOT_CREATED)
+        }
       }
     }
 
@@ -200,6 +242,15 @@ class ProductService {
 
   private async checkIfResultIsNotNull (result: IProductResponse | null, message: string): Promise<void> {
     if (result === null) throw new InternalServerError(message)
+  }
+
+  private chunkArray (productList: IProductCreate[], count: number): IProductCreate[][] {
+    const _productList: IProductCreate[] = productList
+    const chunks: IProductCreate[][] = []
+    for (let i = 0; i < _productList.length; i += count) {
+      chunks.push(_productList.slice(i, i + count))
+    }
+    return chunks
   }
 
   private isObject (item): boolean {

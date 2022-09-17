@@ -45,7 +45,6 @@ export interface IProductUpdate {
   pricd?: number
   qtd_stock?: number
   stock_control_enabled?: boolean
-  bar_codes?: string
 }
 
 export interface IProductQuery {
