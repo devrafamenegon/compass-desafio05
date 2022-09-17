@@ -9,6 +9,14 @@ describe('Feature: Put product', () => {
     describe('When sends a existent product ID', () => {
       const product = productFactory()
       const newProduct = productFactory()
+      const putProduct = {
+        title: newProduct.title,
+        description: newProduct.description,
+        department: newProduct.department,
+        brand: newProduct.brand,
+        price: newProduct.price,
+        qtd_stock: newProduct.qtd_stock,
+      }
       let response
 
       it('Then 200 is returned', async () => {
@@ -20,7 +28,7 @@ describe('Feature: Put product', () => {
         response = await requestApp
           .put(`${PRODUCT_ENDPOINT}/${body._id}`)
           .set(TOKEN)
-          .send(newProduct)
+          .send(putProduct)
 
         expect(response.status).toBe(200)
       })
@@ -34,13 +42,21 @@ describe('Feature: Put product', () => {
     })
     describe('When sends a non-existent product ID', () => {
       const newProduct = productFactory()
+      const putProduct = {
+        title: newProduct.title,
+        description: newProduct.description,
+        department: newProduct.department,
+        brand: newProduct.brand,
+        price: newProduct.price,
+        qtd_stock: newProduct.qtd_stock,
+      }
       let response
 
       it('Then 404 is returned', async () => {
         response = await requestApp
           .put(`${PRODUCT_ENDPOINT}/4585be6d-80bc-4cd3-9d23-20c54bf075ea`)
           .set(TOKEN)
-          .send(newProduct)
+          .send(putProduct)
 
         expect(response.status).toBe(404)
       })
@@ -54,13 +70,21 @@ describe('Feature: Put product', () => {
     })
     describe('When sends a invalid product ID', () => {
       const newProduct = productFactory()
+      const putProduct = {
+        title: newProduct.title,
+        description: newProduct.description,
+        department: newProduct.department,
+        brand: newProduct.brand,
+        price: newProduct.price,
+        qtd_stock: newProduct.qtd_stock,
+      }
       let response
 
       it('Then 400 is returned', async () => {
         response = await requestApp
           .put(`${PRODUCT_ENDPOINT}/123456`)
           .set(TOKEN)
-          .send(newProduct)
+          .send(putProduct)
 
         expect(response.status).toBe(400)
       })
