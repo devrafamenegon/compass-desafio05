@@ -10,7 +10,7 @@ export default (error: CustomError | Error, req: Request, res: Response, next: N
     customError = error
   } else if (error instanceof Error) {
     customError = new InternalServerError(error.message)
-    Logger.error(customError.stack)
+    Logger.error(error.stack)
   }
 
   return res.status(customError.http_code).json(
