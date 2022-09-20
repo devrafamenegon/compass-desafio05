@@ -19,9 +19,7 @@ export const paginateProductsResponse = {
   offset: expect.any(Number),
   offsets: expect.any(Number),
   total: expect.any(Number),
-  products: expect.arrayContaining([
-    expect.objectContaining(productResponse)
-  ])
+  products: expect.any(Array),
 }
 
 export const error_detail = {
@@ -41,7 +39,7 @@ export const checkProductFormat = (body) => {
 }
 
 export const checkPaginateProductsFormat = (body) => {
-  expect(body).toEqual(expect.objectContaining(paginateProductsResponse))
+  expect(body).toEqual(paginateProductsResponse)
 }
 
 export const checkInsertManyProductsFormat = (body) => {
