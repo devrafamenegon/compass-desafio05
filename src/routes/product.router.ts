@@ -15,8 +15,8 @@ router.get(prefix, authenticateUser, validateQuery, ProductController.findAll)
 router.get(`${prefix}/low_stock`, authenticateUser, ProductController.findLowStock)
 router.get(`${prefix}/:id`, authenticateUser, ProductController.findOne)
 router.get(`${prefix}/marketplace/:id`, authenticateUser, ProductController.findOneWithMapper)
-router.put(`${prefix}/:id`, updateValidation, authenticateUser, ProductController.update)
-router.patch(`${prefix}/:id`, updateValidation, authenticateUser, ProductController.update)
+router.put(`${prefix}/:id`, authenticateUser, updateValidation, ProductController.update)
+router.patch(`${prefix}/:id`, authenticateUser, updateValidation, ProductController.update)
 router.delete(`${prefix}/:id`, authenticateUser, ProductController.delete)
 
 export default router
