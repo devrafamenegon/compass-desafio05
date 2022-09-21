@@ -15,6 +15,7 @@ import NotFoundError from '../errors/NotFoundError'
 import mapper from '../../mapper/mapper.json'
 import { IMapper } from 'api/interfaces/IMapper'
 import InternalServerError from '../errors/InternalServerError'
+import { csvHeaders } from '../utils/csvHeaders'
 
 class ProductService {
   async create (payload: IProductCreate): Promise<IProductResponse> {
@@ -73,14 +74,17 @@ class ProductService {
     return result
   }
 
-  async createWithCsv (file: IMulterFile): Promise<any> {
+  async createWithCsv (file: IMulterFile): Promise<IProductCreateWithCsvResponse> {
+    if (!file) throw new BadRequestError(ProductErrorMessages.NOT_CSV_FILE, 'You need to send a csv file')
     if (file.mimetype !== 'text/csv') throw new BadRequestError(ProductErrorMessages.NOT_CSV_FILE, `${file.mimetype} is not a csv file`)
-    if (file.size > 1000000) throw new BadRequestError(ProductErrorMessages.CSV_FILE_TOO_BIGGER, 'File is too big')
+    if (file.size > 300000) throw new BadRequestError(ProductErrorMessages.CSV_FILE_TOO_BIGGER, 'File is too big')
 
     const lines = file.buffer.toString('utf-8').trim().split('\n')
     const headers = lines[0]
 
     const csvFormat = headers.replace(/\r/g, '').split(',')
+
+    this.checkIfHeaderIsValid(csvFormat)
 
     const customResult: IProductCreateWithCsvResponse = {
       success: 0,
@@ -164,7 +168,7 @@ class ProductService {
     return customResult
   }
 
-  async findOneWithMapper (id: string): Promise<Object | null> {
+  async findOneWithMapper (id: string): Promise<Object> {
     await this.checkIfIsValidUuid(id)
     await this.checkIfProductInDatabase(id)
 
@@ -242,6 +246,14 @@ class ProductService {
 
   private async checkIfResultIsNotNull (result: IProductResponse | null, message: string): Promise<void> {
     if (result === null) throw new InternalServerError(message)
+  }
+
+  private checkIfHeaderIsValid (headers: string[]): void {
+    headers.forEach(header => {
+      if (!csvHeaders.includes(header)) {
+        throw new BadRequestError(ProductErrorMessages.INVALID_HEADER, `Header ${header} is not valid, check the first line of your csv file`)
+      }
+    })
   }
 
   private chunkArray (productList: IProductCreate[], count: number): IProductCreate[][] {
