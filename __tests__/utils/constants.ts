@@ -8,6 +8,7 @@ import userFactory from './factories/UserFactory'
 export const BASE_URL = '/api/v1'
 
 export const PRODUCT_CSV_FILE = `${__dirname}/files/products.csv`
+export const PRODUCT_HEADLESS_CSV_FILE = `${__dirname}/files/products-without-header.csv`
 export const PRODUCT_ENDPOINT = `${BASE_URL}/product`
 export const PRODUCT: IProductCreate = productFactory()
 
