@@ -254,6 +254,14 @@ class ProductService {
         throw new BadRequestError(ProductErrorMessages.INVALID_HEADER, `Header ${header} is not valid, check the first line of your csv file`)
       }
     })
+
+    if (headers.length !== csvHeaders.length) {
+      csvHeaders.forEach(header => {
+        if (!headers.includes(header)) {
+          throw new BadRequestError(ProductErrorMessages.MISSING_HEADER, `Header ${header} is missing, check the first line of your csv file`)
+        }
+      })
+    }
   }
 
   private chunkArray (productList: IProductCreate[], count: number): IProductCreate[][] {

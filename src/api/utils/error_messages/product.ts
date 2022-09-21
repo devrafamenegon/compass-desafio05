@@ -8,5 +8,6 @@ export const ProductErrorMessages = {
   INVALID_QUERY_PARAMS: 'Invalid query parameters',
   CSV_FILE_TOO_BIGGER: 'Invalid csv file',
   NOT_CSV_FILE: 'File is not a csv',
-  INVALID_HEADER: 'Invalid header'
+  INVALID_HEADER: 'Invalid header',
+  MISSING_HEADER: 'Missing header'
 }
