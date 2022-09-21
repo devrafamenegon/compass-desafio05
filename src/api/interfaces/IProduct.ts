@@ -51,6 +51,7 @@ export interface IProductQuery {
   department?: string
   brand?: string
   page?: number
+  limit?: number
 }
 
 export interface IErrorsDetails {
