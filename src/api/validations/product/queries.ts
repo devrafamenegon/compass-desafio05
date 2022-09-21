@@ -1,27 +1,23 @@
 /* eslint-disable @typescript-eslint/no-invalid-void-type */
-import { IProductQuery } from '../../interfaces/IProduct'
+import Joi from 'joi'
 import { NextFunction, Request, Response } from 'express'
 import BadRequestError from '../../errors/BadRequestError'
-import { ProductErrorMessages } from '../../utils/error_messages/product'
+import formatJoiMessage from '../../utils/formatJoiMessage'
+import { ErrorMessages } from '../../utils/error_messages'
 
-const acceptedKeys = ['department', 'brand', 'page']
+export const queriesRules = Joi.object({
+  department: Joi.string().optional().trim(),
+  brand: Joi.string().optional().trim(),
+  page: Joi.number().optional().min(0),
+  limit: Joi.number().optional().min(1)
+})
 
 export default async (req: Request, res: Response, next: NextFunction): Promise<Object | void> => {
   try {
-    const query: IProductQuery = req.query
-
-    for (const key in query) {
-      if (!acceptedKeys.includes(key)) {
-        throw new BadRequestError(ProductErrorMessages.INVALID_QUERY_PARAMS, `Query ${key} is not a valid query parameter`)
-      }
-    }
+    const { error } = await queriesRules.validate(req.query, { abortEarly: false })
+    if (error != null) throw error
+    return next()
   } catch (error) {
-    return res.status(400).json({
-      message: error.name,
-      details: [
-        { message: error.message, acceptedKeys }
-      ]
-    })
+    return next(new BadRequestError(ErrorMessages.BAD_REQUEST_QUERY, formatJoiMessage(error as Joi.ValidationError) as string))
   }
-  return next()
 }
