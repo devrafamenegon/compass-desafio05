@@ -17,6 +17,8 @@ import { IMapper } from 'api/interfaces/IMapper'
 import InternalServerError from '../errors/InternalServerError'
 import { csvHeaders } from '../utils/csvHeaders'
 
+const limitDefault: number = Number(process.env.DEFAULT_LIMIT_PER_PAGE ?? 50)
+
 class ProductService {
   async create (payload: IProductCreate): Promise<IProductResponse> {
     await this.checkIfBarcodesAlreadyExists(payload.bar_codes)
@@ -26,15 +28,17 @@ class ProductService {
     return result
   }
 
-  async findAll (query: IProductQuery, page: number): Promise<PaginateResult<IProductResponse>> {
-    const queryBuilded: {[key: string]: object | boolean} = {}
+  async findAll (query: IProductQuery, page: number, limit: number): Promise<PaginateResult<IProductResponse>> {
+    const queryBuilded: {
+      [key: string]: object | boolean
+    } = {}
     Object.keys(query).forEach(key => {
       queryBuilded[key] = { $regex: query[key] }
     })
 
     queryBuilded.stock_control_enabled = true
 
-    const result: PaginateResult<IProductResponse> = await ProductRepository.findAll(queryBuilded, page ?? 1)
+    const result: PaginateResult<IProductResponse> = await ProductRepository.findAll(queryBuilded, page ?? 1, limit ?? limitDefault)
     if (result.totalCount === 0) throw new NotFoundError(ProductErrorMessages.PRODUCT_NOT_FOUND, `Products not found with query: ${JSON.stringify(query)}`)
     return result
   }
@@ -47,8 +51,8 @@ class ProductService {
     return result
   }
 
-  async findLowStock (page: number): Promise<PaginateResult<IProductResponse>> {
-    const result: PaginateResult<IProductResponse> = await ProductRepository.findLowStock(page ?? 1)
+  async findLowStock (page: number, limit: number): Promise<PaginateResult<IProductResponse>> {
+    const result: PaginateResult<IProductResponse> = await ProductRepository.findLowStock(page ?? 1, limit ?? limitDefault)
 
     if (result.totalCount === 0) throw new NotFoundError(ProductErrorMessages.PRODUCT_NOT_FOUND, 'No products found with low stock')
     return result

@@ -4,8 +4,6 @@ import ProductSchema from '../schemas/ProductSchema'
 import { PaginateResult } from 'mongoose'
 import customLabels from '../utils/paginate/product'
 
-const limitDefault: number = Number(process.env.DEFAULT_LIMIT_PER_PAGE ?? 50)
-
 class ProductRepository {
   async create (payload: IProductCreate): Promise<IProductResponse> {
     return await ProductSchema.create(payload)
@@ -15,8 +13,12 @@ class ProductRepository {
     return await ProductSchema.insertMany(payload)
   }
 
-  async findAll (query: IProductQuery, page: number): Promise<PaginateResult<IProductResponse>> {
-    return await ProductSchema.paginate(query, { page, limit: limitDefault, customLabels })
+  async findAll (query: IProductQuery, page: number, limit: number): Promise<PaginateResult<IProductResponse>> {
+    return await ProductSchema.paginate(query, {
+      page,
+      limit,
+      customLabels
+    })
   }
 
   async findOne (id: string): Promise<IProductResponse | null> {
@@ -27,7 +29,7 @@ class ProductRepository {
     return await ProductSchema.findOne({ bar_codes })
   }
 
-  async findLowStock (page: number): Promise<PaginateResult<IProductResponse>> {
+  async findLowStock (page: number, limit: number): Promise<PaginateResult<IProductResponse>> {
     return await ProductSchema.paginate(
       {
         stock_control_enabled: true,
@@ -35,7 +37,7 @@ class ProductRepository {
       },
       {
         page,
-        limit: limitDefault,
+        limit,
         sort: { qtd_stock: 1 },
         customLabels
       }

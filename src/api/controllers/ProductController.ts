@@ -16,8 +16,8 @@ class ProductController {
 
   async findAll (req, res: Response, next: NextFunction): Promise<Response | undefined> {
     try {
-      const { page, ...body } = req.query
-      const result = await ProductService.findAll(body, page)
+      const { page, limit, ...body } = req.query
+      const result = await ProductService.findAll(body, page, limit)
       return res.status(200).json(result)
     } catch (error) {
       next(error)
@@ -36,8 +36,8 @@ class ProductController {
 
   async findLowStock (req, res: Response, next: NextFunction): Promise<Response | undefined> {
     try {
-      const { page } = req.query
-      const result = await ProductService.findLowStock(page)
+      const { page, limit } = req.query
+      const result = await ProductService.findLowStock(page, limit)
       return res.status(200).json(result)
     } catch (error) {
       next(error)
