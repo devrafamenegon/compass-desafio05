@@ -1,5 +1,6 @@
 import { requestApp } from "../../setup"
-import { PRODUCT_CSV_FILE, PRODUCT_ENDPOINT, TOKEN } from "../../utils/constants"
+import { PRODUCT_CSV_FILE, PRODUCT_ENDPOINT, PRODUCT_HEADLESS_CSV_FILE, TOKEN } from "../../utils/constants"
+import { checkErrorFormat } from "../../utils/formats/ErrorFormat"
 import { checkInsertManyProductsFormat } from "../../utils/formats/ProductFormat"
 
 describe('Feature: Create product with csv', () => {
@@ -23,6 +24,28 @@ describe('Feature: Create product with csv', () => {
       })
       it('And header content type is application/json', async () => {
         expect(response.headers['content-type']).toEqual(expect.stringContaining('application/json'))
+      })
+    })
+
+    describe('When sends a invalid csv file', () => {
+      describe('And the header is missing', () => {
+        let response
+
+        it('Then 400 is returned', async () => {
+          response = await requestApp
+            .post(FEATURE_ENDPOINT)
+            .set(TOKEN)
+            .attach('file', PRODUCT_HEADLESS_CSV_FILE)
+
+          expect(response.status).toBe(400)
+        })
+
+        it('And body have error format', async () => {
+          checkErrorFormat(response.body)
+        })
+        it('And header content type is application/json', async () => {
+          expect(response.headers['content-type']).toEqual(expect.stringContaining('application/json'))
+        })
       })
     })
   })
