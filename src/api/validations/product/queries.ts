@@ -8,7 +8,7 @@ import { ErrorMessages } from '../../utils/error_messages'
 export const queriesRules = Joi.object({
   department: Joi.string().optional().trim(),
   brand: Joi.string().optional().trim(),
-  page: Joi.number().optional().min(0),
+  offset: Joi.number().optional().min(0),
   limit: Joi.number().optional().min(1)
 })
 
