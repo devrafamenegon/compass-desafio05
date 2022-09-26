@@ -13,9 +13,9 @@ class ProductRepository {
     return await ProductSchema.insertMany(payload)
   }
 
-  async findAll (query: IProductQuery, page: number, limit: number): Promise<PaginateResult<IProductResponse>> {
+  async findAll (query: IProductQuery, offset: number, limit: number): Promise<PaginateResult<IProductResponse>> {
     return await ProductSchema.paginate(query, {
-      page,
+      page: offset,
       limit,
       customLabels
     })
@@ -29,18 +29,13 @@ class ProductRepository {
     return await ProductSchema.findOne({ bar_codes })
   }
 
-  async findLowStock (page: number, limit: number): Promise<PaginateResult<IProductResponse>> {
-    return await ProductSchema.paginate(
-      {
-        stock_control_enabled: true,
-        qtd_stock: { $lt: 100 }
-      },
-      {
-        page,
-        limit,
-        sort: { qtd_stock: 1 },
-        customLabels
-      }
+  async findLowStock (query: IProductQuery, offset: number, limit: number): Promise<PaginateResult<IProductResponse>> {
+    return await ProductSchema.paginate(query, {
+      page: offset,
+      limit,
+      sort: { qtd_stock: 1 },
+      customLabels
+    }
     )
   }
 
