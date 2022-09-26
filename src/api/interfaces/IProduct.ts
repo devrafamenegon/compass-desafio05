@@ -50,7 +50,7 @@ export interface IProductUpdate {
 export interface IProductQuery {
   department?: string
   brand?: string
-  page?: number
+  offset?: number
   limit?: number
 }
 
