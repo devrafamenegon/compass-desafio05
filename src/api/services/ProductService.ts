@@ -28,7 +28,8 @@ class ProductService {
     return result
   }
 
-  async findAll (query: IProductQuery, page: number, limit: number): Promise<PaginateResult<IProductResponse>> {
+  async findAll (queries: IProductQuery): Promise<PaginateResult<IProductResponse>> {
+    const { offset, limit, ...query } = queries
     const queryBuilded: {
       [key: string]: object | boolean
     } = {}
@@ -38,7 +39,7 @@ class ProductService {
 
     queryBuilded.stock_control_enabled = true
 
-    const result: PaginateResult<IProductResponse> = await ProductRepository.findAll(queryBuilded, page ?? 1, limit ?? limitDefault)
+    const result: PaginateResult<IProductResponse> = await ProductRepository.findAll(queryBuilded, offset ?? 1, limit ?? limitDefault)
     if (result.totalCount === 0) throw new NotFoundError(ProductErrorMessages.PRODUCT_NOT_FOUND, `Products not found with query: ${JSON.stringify(query)}`)
     return result
   }
@@ -51,8 +52,19 @@ class ProductService {
     return result
   }
 
-  async findLowStock (page: number, limit: number): Promise<PaginateResult<IProductResponse>> {
-    const result: PaginateResult<IProductResponse> = await ProductRepository.findLowStock(page ?? 1, limit ?? limitDefault)
+  async findLowStock (queries: IProductQuery): Promise<PaginateResult<IProductResponse>> {
+    const { offset, limit, ...query } = queries
+    const queryBuilded: {
+      [key: string]: object | boolean
+    } = {}
+    Object.keys(query).forEach(key => {
+      queryBuilded[key] = { $regex: query[key] }
+    })
+
+    queryBuilded.stock_control_enabled = true
+    queryBuilded.qtd_stock = { $lt: 100 }
+
+    const result: PaginateResult<IProductResponse> = await ProductRepository.findLowStock(queryBuilded, offset ?? 1, limit ?? limitDefault)
 
     if (result.totalCount === 0) throw new NotFoundError(ProductErrorMessages.PRODUCT_NOT_FOUND, 'No products found with low stock')
     return result
