@@ -1,5 +1,5 @@
 import { IMulterFile } from '../interfaces/IMulterFile'
-import type { IProductCreate } from 'api/interfaces/IProduct'
+import type { IProductCreate, IProductQuery } from 'api/interfaces/IProduct'
 import { NextFunction, Request, Response } from 'express'
 import ProductService from '../services/ProductService'
 
@@ -16,8 +16,8 @@ class ProductController {
 
   async findAll (req, res: Response, next: NextFunction): Promise<Response | undefined> {
     try {
-      const { page, limit, ...body } = req.query
-      const result = await ProductService.findAll(body, page, limit)
+      const queries: IProductQuery = req.query
+      const result = await ProductService.findAll(queries)
       return res.status(200).json(result)
     } catch (error) {
       next(error)
@@ -34,10 +34,10 @@ class ProductController {
     }
   }
 
-  async findLowStock (req, res: Response, next: NextFunction): Promise<Response | undefined> {
+  async findLowStock (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
     try {
-      const { page, limit } = req.query
-      const result = await ProductService.findLowStock(page, limit)
+      const queries: IProductQuery = req.query
+      const result = await ProductService.findLowStock(queries)
       return res.status(200).json(result)
     } catch (error) {
       next(error)
